@@ -1,14 +1,16 @@
 package com.game.service;
 
-import com.game.data.entities.Game;
+import com.game.data.dto.GameDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Set;
 
 public interface IGameService
 {
     // Get game by game_id
-    Game findById(Integer id);
+    GameDto add(GameDto gameDto);
+    GameDto update(GameDto gameDto);
+    GameDto findById(Integer id);
     // get list game by category_id
-    List<Game> findAllByCategoryId(Integer categoryId , Boolean active);
+    List<GameDto> findAll(Integer integer , Boolean active ,String orderBy , String sortDir ,  Pageable pageable);
 }

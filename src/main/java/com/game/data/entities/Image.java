@@ -1,11 +1,7 @@
 package com.game.data.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "image_lat_hinh")
@@ -20,13 +16,9 @@ public class Image  extends BaseEntity
     @Column(name = "map_value")
     private Integer value;
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "image" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-    private List<Log> logs;
-
     public Image() {
     }
 
@@ -43,14 +35,6 @@ public class Image  extends BaseEntity
 
     public void setActivePlay(Boolean activePlay) {
         this.activePlay = activePlay;
-    }
-
-    public List<Log> getLogs() {
-        return logs;
-    }
-
-    public void setLogs(List<Log> logs) {
-        this.logs = logs;
     }
 
     public String getLink() {

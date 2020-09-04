@@ -1,7 +1,5 @@
 package com.game.data.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 
 @Entity
@@ -12,12 +10,10 @@ public class Rank  extends BaseEntity
     private Integer time;
     @Column(name = "score")
     private Integer score;
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
 
