@@ -1,8 +1,7 @@
 package com.game.data.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "role")
@@ -12,6 +11,9 @@ public class Role {
     private Integer id;
 
     private String name;
+
+    @OneToMany(mappedBy = "role")
+    private Set<Redirection> redirections;
 
     public Role() {}
 

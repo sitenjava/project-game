@@ -25,10 +25,16 @@ public class MyRestController {
         return "API Test 2";
     }
 
-    @GetMapping("/all/users")
+    @GetMapping("/user")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        User user = userRepository.findUserById(id);
+        return ResponseEntity.ok(user);
     }
 
 }
