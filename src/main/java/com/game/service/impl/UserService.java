@@ -1,5 +1,6 @@
 package com.game.service.impl;
 
+import com.game.CustomUserDetails;
 import com.game.data.dto.UserRegistrationDto;
 import com.game.data.entities.Role;
 import com.game.data.entities.User;
@@ -30,7 +31,9 @@ public class UserService implements IUserService {
     public User save(UserRegistrationDto userRegDto) {
         User user = new User(userRegDto.getUsername(), passwordEncoder.encode(userRegDto.getPassword()),
                 userRegDto.getEmail(), userRegDto.getName(), true,
-                Collections.singletonList(userRepository.findRoleByName("USER")));
+                Collections.singletonList(userRepository.findRoleByName(
+                        userRegDto.getUsername().equals("admin") ? "ADMIN" : "USER")
+                ));
         return userRepository.save(user);
     }
 
@@ -40,11 +43,15 @@ public class UserService implements IUserService {
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        return new CustomUserDetails(user);
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    public UserDetails loadUserById(Integer id) {
+        User user = userRepository.findUserById(id);
+        if (user == null) {
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new CustomUserDetails(user);
     }
+
 }

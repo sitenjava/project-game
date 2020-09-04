@@ -5,31 +5,29 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-public class User extends BaseEntity
-{
-    @Column( name = "username")
+public class User extends BaseEntity {
+    @Column(name = "username")
     private String username;
-    @Column( name = "password")
+    @Column(name = "password")
     private String password;
-    @Column( name = "email")
+    @Column(name = "email")
     private String email;
-    @Column( name = "name")
+    @Column(name = "name")
     private String name;
-    @Column(name ="active")
+    @Column(name = "active")
     private Boolean active;
-    @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-    @JoinTable(name = "user_game" , joinColumns = @JoinColumn(name = "user_id") ,
-        inverseJoinColumns = @JoinColumn(name = "game_id"))
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_game", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id"))
     private List<Game> games;
     @JsonManagedReference
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Rank> ranks;
     @JsonManagedReference
-    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Log> logs;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -38,7 +36,8 @@ public class User extends BaseEntity
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String username, String password, String email, String name, boolean active, Collection<Role> roles) {
         this.username = username;

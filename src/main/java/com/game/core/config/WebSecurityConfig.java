@@ -1,5 +1,9 @@
 package com.game.core.config;
 
+import com.game.JwtAuthenticationFilter;
+import com.game.JwtAuthorizationFilter;
+import com.game.SecurityHandler;
+import com.game.data.repository.UserRepository;
 import com.game.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -17,7 +22,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    public IUserService userService;
+    private IUserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    SecurityHandler securityHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -39,13 +50,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/registration**", "/")
-                .permitAll().anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll()
+        http/*.cors().and().csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))*/
+                .authorizeRequests()
+                .antMatchers("/registration", "/").permitAll()
+                .antMatchers("/admin/**", "/api/**").hasAuthority("ADMIN")
+                .anyRequest().authenticated()
+                .and().formLogin()
+                .loginPage("/login").successHandler(new SecurityHandler()).permitAll()
                 .and().logout().invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").permitAll();
+                .logoutSuccessUrl("/login?logout").permitAll()
+                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret");
     }
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:="http://www.w3.org/1999/xhtml" xmlns:sec="https://thymeleaf-extras-springsecurity5"
+<html xmlns:="http://www.w3.org/1999/xhtml"
       xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -12,9 +12,7 @@
 <body>
 <header th:insert="fragments.html :: nav"></header>
 <div class="container">
-    <div sec:authorize="isAuthenticated()">
-        Welcome <span sec:authentication="name">Guest</span>!
-    </div>
+    <p>This is admin\index. Only admin can see this.</p>
 </div>
 
 </body>
