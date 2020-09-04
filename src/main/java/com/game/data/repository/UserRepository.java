@@ -1,6 +1,5 @@
 package com.game.data.repository;
 
-import com.game.data.entities.Role;
 import com.game.data.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.id = :id")
     User findUserById(@Param("id") Integer id);
-
-    @Query("SELECT r FROM Role r WHERE r.name = :name")
-    Role findRoleByName(@Param("name") String name);
 }
