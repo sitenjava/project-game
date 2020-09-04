@@ -47,15 +47,12 @@ public class Application {
         try {
             roleRepository.save(roleAdmin);
             roleRepository.save(roleUser);
-
             actionRepository.save(create);
             actionRepository.save(read);
             actionRepository.save(update);
             actionRepository.save(delete);
-
             urlRepository.save(apiUser);
             urlRepository.save(apiUserDetail);
-
             redirectionRepository.save(addUser);
             redirectionRepository.save(getUsers);
             redirectionRepository.save(getUserDetail);
