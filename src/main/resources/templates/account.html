@@ -3,7 +3,7 @@
       xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage</title>
+    <title>Account Page</title>
 
     <!-- Bootstrap CSS -->
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -11,15 +11,11 @@
 </head>
 <body>
 <header th:insert="fragments.html :: nav"></header>
-<div class="container">
-<<<<<<< HEAD
-<!--    <h1>Welcome <span sec:authentication="principal.username">User</span></h1>-->
-=======
-    <div sec:authorize="isAuthenticated()">
-        Welcome <span sec:authentication="name">Guest</span>!
-    </div>
->>>>>>> 0d000598c704db3418f9c342b35ff7bfec65fc66
+<div class="container" th:object="${curUser}">
+    <p><b>Username: </b><span th:text="*{username}"></span></p>
+    <p><b>Name: </b><span th:text="*{name}"></span></p>
+    <p><b>Email: </b><span th:text="*{email}"></span></p>
+    <p><b>Roles: </b><span sec:authentication="principal.authorities"></span></p>
 </div>
-
 </body>
 </html>

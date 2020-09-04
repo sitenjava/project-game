@@ -3,39 +3,22 @@
       xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Spring Security</title>
+    <title>Homepage</title>
 
     <!-- Bootstrap CSS -->
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
 </head>
 <body>
-<!--Navigation bar-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"
-            class="navbar-toggler"
-            data-target="#navbarNavAltMarkup" data-toggle="collapse" type="button">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a class="nav-link" th:href="@{/}">Home</a>
-            <a class="nav-link" href="#">Games</a>
-            <a class="nav-link" href="#">Account</a>
-            <a aria-disabled="true" class="nav-link disabled" href="#" tabindex="-1">Disabled</a>
-        </div>
-    </div>
-    <!--<form class="form-inline">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
-    </form>-->
-    <form class="form-inline">
-        <a class="btn btn-outline-light" role="button" sec:authrize="isAuthenticated()" th:href="@{/logout}">Logout</a>
-    </form>
-</nav>
+<header th:insert="fragments.html :: nav"></header>
 <div class="container">
+<<<<<<< HEAD
 <!--    <h1>Welcome <span sec:authentication="principal.username">User</span></h1>-->
+=======
+    <div sec:authorize="isAuthenticated()">
+        Welcome <span sec:authentication="name">Guest</span>!
+    </div>
+>>>>>>> 0d000598c704db3418f9c342b35ff7bfec65fc66
 </div>
 
 </body>
