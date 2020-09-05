@@ -19,11 +19,11 @@ public class Image  extends BaseEntity
     private Boolean active;
     @Column(name = "map_value")
     private Integer value;
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
-    @JsonManagedReference
+    //@JsonManagedReference
     @OneToMany(mappedBy = "image" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<Log> logs;
 

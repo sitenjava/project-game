@@ -3,7 +3,7 @@ package com.game.data.entities;
 import javax.persistence.*;
 
 @Entity
-public class Redirection{
+public class Redirection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,8 @@ public class Redirection{
     @JoinColumn(name = "action_id")
     private Action action;
 
-    public Redirection() {}
+    public Redirection() {
+    }
 
     public Redirection(Role role, Url url, Action action) {
         this.role = role;

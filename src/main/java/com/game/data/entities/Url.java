@@ -4,8 +4,9 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "url")
-public class Url{
+@Table(name = "url", uniqueConstraints = @UniqueConstraint(columnNames = "link"))
+public class Url {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -16,7 +17,8 @@ public class Url{
     @OneToMany(mappedBy = "url")
     private Set<Redirection> redirections;
 
-    public Url() {}
+    public Url() {
+    }
 
     public Url(String link) {
         this.link = link;

@@ -12,11 +12,11 @@ public class Rank  extends BaseEntity
     private Integer time;
     @Column(name = "score")
     private Integer score;
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;

@@ -34,10 +34,10 @@ public class Game extends BaseEntity
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
-    @JsonManagedReference
+    //@JsonManagedReference
     @OneToMany(mappedBy = "game" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<Rank> ranks;
-    @JsonManagedReference
+    //@JsonManagedReference
     @OneToMany(mappedBy = "game" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<Image> images;
 

@@ -1,8 +1,5 @@
 package com.game;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginModelView {
     private String username;
 

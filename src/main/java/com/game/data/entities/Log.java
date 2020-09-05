@@ -12,11 +12,11 @@ public class Log extends BaseEntity
     private Boolean active;
     @Column(name = "time")
     private Integer time;
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
-    @JsonBackReference
+    //@JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;

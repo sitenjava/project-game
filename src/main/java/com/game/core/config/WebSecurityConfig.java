@@ -1,7 +1,11 @@
 package com.game.core.config;
 
+import com.game.JwtAuthenticationFilter;
+import com.game.JwtAuthorizationFilter;
 import com.game.SecurityHandler;
+import com.game.data.repository.ActionRepository;
 import com.game.data.repository.RedirectionRepository;
+import com.game.data.repository.RoleRepository;
 import com.game.data.repository.UserRepository;
 import com.game.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -25,6 +30,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private ActionRepository actionRepository;
 
     @Autowired
     private RedirectionRepository redirectionRepository;
@@ -52,37 +63,65 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http.cors().and().csrf().disable()
+        http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));*/
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
 
         http.authorizeRequests()
                 .antMatchers("/registration", "/").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
 
-        redirectionRepository.getLinks("ADMIN", "POST").forEach(link -> {
-            try {
-                http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority("ADMIN");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        roleRepository.getAllRoleNames().forEach(role -> {
+            /*actionRepository.getAllActionMethods().forEach(method -> {
+                redirectionRepository.getLinks(role, method).forEach(link -> {
+                    try {
+                        http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            });*/
+            redirectionRepository.getLinks(role, "POST").forEach(link -> {
+                try {
+                    http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
-        redirectionRepository.getLinks("ADMIN", "GET").forEach(link -> {
-            try {
-                http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority("ADMIN");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            redirectionRepository.getLinks(role, "GET").forEach(link -> {
+                try {
+                    System.out.println(link);
+                    http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority(role);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            redirectionRepository.getLinks(role, "PUT").forEach(link -> {
+                try {
+                    http.authorizeRequests().antMatchers(HttpMethod.PUT, link).hasAuthority(role);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            redirectionRepository.getLinks(role, "DELETE").forEach(link -> {
+                try {
+                    http.authorizeRequests().antMatchers(HttpMethod.DELETE, link).hasAuthority(role);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         });
 
         http.authorizeRequests().anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
+                .loginPage("/login").defaultSuccessUrl("/index", true).permitAll()
                 .and().logout().invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
