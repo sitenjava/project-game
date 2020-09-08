@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "action")
+@Table(name = "action", uniqueConstraints = @UniqueConstraint(columnNames = "method"))
 public class Action{
 
     @Id

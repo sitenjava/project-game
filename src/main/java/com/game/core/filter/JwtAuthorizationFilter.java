@@ -1,7 +1,9 @@
-package com.game;
+package com.game.core.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.game.CustomUserDetails;
+import com.game.core.SecurityConstants;
 import com.game.data.entities.User;
 import com.game.data.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +20,9 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private static String token;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
@@ -29,9 +33,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // Read the Authorization header (JWT token)
-        String header = request.getHeader(JwtProperties.JWT_HEADER_STRING);
+        String header = request.getHeader(SecurityConstants.JWT_HEADER_STRING);
 
-        if (header == null || !header.startsWith(JwtProperties.JWT_TOKEN_PREFIX)) {
+        if (header == null || !header.startsWith(SecurityConstants.JWT_TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
@@ -44,13 +48,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(JwtProperties.JWT_HEADER_STRING);
+        token = request.getHeader(SecurityConstants.JWT_HEADER_STRING);
 
         // Validate token
-        String username = JWT.require(Algorithm.HMAC512(JwtProperties.JWT_SECRET.getBytes()))
-                .build()
-                .verify(token.replace(JwtProperties.JWT_TOKEN_PREFIX, ""))
-                .getSubject();
+        String username = getUsernameFromToken(token);
 
         if (username != null) {
             User user = userRepository.findUserByUsername(username);
@@ -61,5 +62,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         return null;
+    }
+
+    private String getUsernameFromToken(String token) {
+        return JWT.require(Algorithm.HMAC512(SecurityConstants.JWT_SECRET.getBytes()))
+                .build()
+                .verify(token.replace(SecurityConstants.JWT_TOKEN_PREFIX, ""))
+                .getSubject();
+    }
+
+    public User getUserFromToken() {
+        return userRepository.findUserByUsername(getUsernameFromToken(token));
     }
 }

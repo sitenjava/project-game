@@ -29,8 +29,8 @@ public class Application {
         UrlRepository urlRepository = context.getBean(UrlRepository.class);
         RedirectionRepository redirectionRepository = context.getBean(RedirectionRepository.class);
 
-        Role roleAdmin = new Role(1, "ADMIN");
-        Role roleUser = new Role(2, "USER");
+        Role roleAdmin = new Role("ADMIN");
+        Role roleUser = new Role("USER");
 
         Action create = new Action("POST");
         Action read = new Action("GET");
@@ -39,10 +39,17 @@ public class Application {
 
         Url apiUser = new Url("/api/user");
         Url apiUserDetail = new Url("/api/user/{id}");
+        Url login = new Url("/login");
+        Url register = new Url("/register");
+        Url home = new Url("/");
 
         Redirection addUser = new Redirection(roleAdmin, apiUser, create);
         Redirection getUsers = new Redirection(roleAdmin, apiUser, read);
         Redirection getUserDetail = new Redirection(roleAdmin, apiUserDetail, read);
+        Redirection updateUserDetail = new Redirection(roleAdmin, apiUserDetail, update);
+        Redirection loginPost = new Redirection(roleAdmin, login, create);
+        Redirection loginRead = new Redirection(roleAdmin, login, read);
+
 
         try {
             roleRepository.save(roleAdmin);
@@ -56,6 +63,7 @@ public class Application {
             redirectionRepository.save(addUser);
             redirectionRepository.save(getUsers);
             redirectionRepository.save(getUserDetail);
+            redirectionRepository.save(updateUserDetail);
         } catch (Exception e) {
             e.printStackTrace();
         }

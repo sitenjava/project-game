@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "role")
+@Table(name = "role", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Role {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
@@ -17,8 +18,7 @@ public class Role {
 
     public Role() {}
 
-    public Role(Integer id, String name) {
-        this.id = id;
+    public Role(String name) {
         this.name = name;
     }
 
