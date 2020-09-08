@@ -119,4 +119,8 @@ public class User extends BaseEntity {
     public void setLogs(List<Log> logs) {
         this.logs = logs;
     }
+
+    public boolean hasRole(Role role) {
+        return roles.contains(role);
+    }
 }

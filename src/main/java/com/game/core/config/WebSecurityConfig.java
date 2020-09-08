@@ -1,7 +1,7 @@
 package com.game.core.config;
 
-import com.game.JwtAuthenticationFilter;
-import com.game.JwtAuthorizationFilter;
+import com.game.core.filter.JwtAuthenticationFilter;
+import com.game.core.filter.JwtAuthorizationFilter;
 import com.game.SecurityHandler;
 import com.game.data.repository.ActionRepository;
 import com.game.data.repository.RedirectionRepository;
@@ -20,6 +20,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -75,16 +78,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
 
         roleRepository.getAllRoleNames().forEach(role -> {
-            /*actionRepository.getAllActionMethods().forEach(method -> {
+            actionRepository.getAllActionMethods().forEach(method -> {
                 redirectionRepository.getLinks(role, method).forEach(link -> {
                     try {
-                        http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
+                        switch (method) {
+                            case "POST":
+                                http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
+                            case "GET":
+                                http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority(role);
+                            case "PUT":
+                                http.authorizeRequests().antMatchers(HttpMethod.PUT, link).hasAuthority(role);
+                            case "DELETE":
+                                http.authorizeRequests().antMatchers(HttpMethod.DELETE, link).hasAuthority(role);
+                        }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-            });*/
-            redirectionRepository.getLinks(role, "POST").forEach(link -> {
+            });
+            /*redirectionRepository.getLinks(role, "POST").forEach(link -> {
                 try {
                     http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
                 } catch (Exception e) {
@@ -115,18 +128,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            });
+            });*/
         });
 
         http.authorizeRequests().anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").defaultSuccessUrl("/index", true).permitAll()
+                .loginPage("/login").loginProcessingUrl("/login")
+                .defaultSuccessUrl("/index.html", true).permitAll()
                 .and().logout().invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout").permitAll()
                 .and().rememberMe().tokenValiditySeconds(604800).key("mySecret");
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
     }
 
 }
