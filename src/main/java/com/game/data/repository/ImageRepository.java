@@ -17,9 +17,6 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
     List<Image> findAll(@Param("gameId") Integer gameId, @Param("active") Boolean active,
                         @Param("activePlay") Boolean activePlay , Pageable pageable);
 
-    //    @Query(value = "update Image set (:active is null or active=:active) or (:activePlay is null or activePlay=:activePlay) where id=:id")
-//    void updateActive(@Param("id") Integer id , @Param("active") Boolean active ,
-//                      @Param("activePlay") Boolean activePlay);
     @Modifying
     @Query(value = "update image_lat_hinh set active=:active where id=:id", nativeQuery = true)
     void updateActive(@Param("id") Integer id, @Param("active") Boolean active);
