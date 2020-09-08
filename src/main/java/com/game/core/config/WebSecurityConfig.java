@@ -1,7 +1,5 @@
 
 package com.game.core.config;
-
-import com.game.JwtAuthenticationFilter;
 import com.game.SecurityHandler;
 import com.game.data.repository.RedirectionRepository;
 import com.game.data.repository.UserRepository;
@@ -15,7 +13,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -55,42 +52,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests().antMatchers("/*").permitAll();
 //        /http.cors().and().csrf().disable()
 //                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
 //                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
 //                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
 
-        http.authorizeRequests()
-                .antMatchers("/registration", "/").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
+//        http.authorizeRequests()
+//                .antMatchers("/registration", "/").permitAll()
+//                .antMatchers("/admin/**").hasAuthority("ADMIN")
+//                .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
 
-        redirectionRepository.getLinks("ADMIN", "POST").forEach(link -> {
-            try {
-                http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority("ADMIN");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+//        redirectionRepository.getLinks("ADMIN", "POST").forEach(link -> {
+//            try {
+//                http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority("ADMIN");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        redirectionRepository.getLinks("ADMIN", "GET").forEach(link -> {
+//            try {
+//                http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority("ADMIN");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
 
-        redirectionRepository.getLinks("ADMIN", "GET").forEach(link -> {
-            try {
-                http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority("ADMIN");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        http.authorizeRequests().anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login").permitAll()
-                .and().logout().invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").permitAll()
-                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret");
+//        http.authorizeRequests().anyRequest().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/login").permitAll()
+//                .and().logout().invalidateHttpSession(true)
+//                .clearAuthentication(true)
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/login?logout").permitAll()
+//                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret");
     }
 
 }

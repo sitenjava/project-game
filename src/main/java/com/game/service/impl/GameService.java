@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class GameService implements IGameService
-{
+public class GameService implements IGameService {
     @Autowired
     private GameRepository gameRepository;
     @Autowired
@@ -32,30 +31,24 @@ public class GameService implements IGameService
 
     @Override
     @Transactional
-    public GameDto add(GameDto gameDto)
-    {
+    public GameDto add(GameDto gameDto) {
         Game game = gameConverter.toEntity(gameDto);
         return gameConverter.toDto(gameRepository.save(game));
     }
 
     @Override
     @Transactional
-    public GameDto update(GameDto gameDto)
-    {
+    public GameDto update(GameDto gameDto) {
         Game game = gameConverter.toEntity(gameDto);
         Set<User> users = gameRepository.findById(gameDto.getId()).get().getUsers();
         if (users == null)
             users = new HashSet<>();
         String action = gameDto.getAction();
         Integer[] ids = gameDto.getIds();
-        if (action.equals("add"))
-        {
+        if (action.equals("add")) {
             for (Integer id : ids)
                 users.add(userRepository.findById(id).get());
-        }
-        else
-        if (action.equals("remove"))
-        {
+        } else if (action.equals("remove")) {
             for (Integer id : ids)
                 users.removeIf(user -> user.getId() == id);
         }
@@ -70,10 +63,9 @@ public class GameService implements IGameService
     }
 
     @Override
-    public List<GameDto> findAll(Integer categoryId, Boolean active ,String orderBy , String sortDir , Pageable pageable)
-    {
+    public List<GameDto> findAll(Integer categoryId, Boolean active, String orderBy, String sortDir, Pageable pageable) {
         if (orderBy != null && sortDir != null)
-            pageable = PageRequest.of(pageable.getPageNumber(), (int) pageable.getPageSize(),Sort.Direction.valueOf(sortDir),orderBy);
-        return gameConverter.toDto(gameRepository.findAll(categoryId,active,pageable));
+            pageable = PageRequest.of(pageable.getPageNumber(), (int) pageable.getPageSize(), Sort.Direction.valueOf(sortDir), orderBy);
+        return gameConverter.toDto(gameRepository.findAll(categoryId, active, pageable));
     }
 }
