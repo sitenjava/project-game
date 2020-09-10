@@ -3,6 +3,7 @@ package com.game.core.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.game.CustomUserDetails;
+import com.game.core.GlobalVariables;
 import com.game.core.SecurityConstants;
 import com.game.data.entities.User;
 import com.game.data.repository.UserRepository;
@@ -55,6 +56,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (username != null) {
             User user = userRepository.findUserByUsername(username);
+            GlobalVariables.getInstance().setCurrentUser(user);
             CustomUserDetails userDetails = new CustomUserDetails(user);
             return new UsernamePasswordAuthenticationToken(
                     username, null, userDetails.getAuthorities()
@@ -69,9 +71,5 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 .build()
                 .verify(token.replace(SecurityConstants.JWT_TOKEN_PREFIX, ""))
                 .getSubject();
-    }
-
-    public User getUserFromToken() {
-        return userRepository.findUserByUsername(getUsernameFromToken(token));
     }
 }

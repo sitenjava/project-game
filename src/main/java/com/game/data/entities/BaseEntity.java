@@ -1,5 +1,9 @@
 package com.game.data.entities;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -13,12 +17,16 @@ public class BaseEntity
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
     @Column(name = "creator")
+    @CreatedBy
     protected String creator;
     @Column(name = "created_time")
+    @CreatedDate
     protected Date createdTime;
     @Column(name = "modifier")
+    @LastModifiedBy
     protected String modifier;
     @Column(name = "modified_time")
+    @LastModifiedDate
     protected Date modifiedTime;
 
 

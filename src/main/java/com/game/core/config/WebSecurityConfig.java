@@ -1,8 +1,10 @@
 package com.game.core.config;
 
+import com.game.CustomAuthenticationEntryPoint;
+import com.game.SecurityHandler;
 import com.game.core.filter.JwtAuthenticationFilter;
 import com.game.core.filter.JwtAuthorizationFilter;
-import com.game.SecurityHandler;
+import com.game.data.entities.Redirection;
 import com.game.data.repository.ActionRepository;
 import com.game.data.repository.RedirectionRepository;
 import com.game.data.repository.RoleRepository;
@@ -19,6 +21,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,26 +32,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    SecurityHandler securityHandler;
+    @Autowired
     private IUserService userService;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
     private ActionRepository actionRepository;
-
     @Autowired
     private RedirectionRepository redirectionRepository;
-
-    @Autowired
-    SecurityHandler securityHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
     }
 
     @Bean
@@ -77,58 +80,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
 
-        roleRepository.getAllRoleNames().forEach(role -> {
-            actionRepository.getAllActionMethods().forEach(method -> {
-                redirectionRepository.getLinks(role, method).forEach(link -> {
-                    try {
-                        switch (method) {
-                            case "POST":
-                                http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
-                            case "GET":
-                                http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority(role);
-                            case "PUT":
-                                http.authorizeRequests().antMatchers(HttpMethod.PUT, link).hasAuthority(role);
-                            case "DELETE":
-                                http.authorizeRequests().antMatchers(HttpMethod.DELETE, link).hasAuthority(role);
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            });
-            /*redirectionRepository.getLinks(role, "POST").forEach(link -> {
-                try {
-                    http.authorizeRequests().antMatchers(HttpMethod.POST, link).hasAuthority(role);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-            redirectionRepository.getLinks(role, "GET").forEach(link -> {
-                try {
-                    System.out.println(link);
-                    http.authorizeRequests().antMatchers(HttpMethod.GET, link).hasAuthority(role);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-            redirectionRepository.getLinks(role, "PUT").forEach(link -> {
-                try {
-                    http.authorizeRequests().antMatchers(HttpMethod.PUT, link).hasAuthority(role);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-            redirectionRepository.getLinks(role, "DELETE").forEach(link -> {
-                try {
-                    http.authorizeRequests().antMatchers(HttpMethod.DELETE, link).hasAuthority(role);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });*/
+        redirectionRepository.getDirections().forEach(redirection -> {
+            try {
+                HttpMethod httpMethod = getHttpMethod(redirection);
+                http.authorizeRequests().antMatchers(httpMethod, redirection.getUrl().getLink())
+                        .hasAuthority(redirection.getRole().getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
         http.authorizeRequests().anyRequest().authenticated()
@@ -140,7 +99,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout").permitAll()
-                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret");
+                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret")
+                .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
     }
 
     @Bean
@@ -148,6 +108,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
+    }
+
+    private HttpMethod getHttpMethod(Redirection redirection) {
+        switch (redirection.getAction().getMethod()) {
+            case "POST":
+                return HttpMethod.POST;
+            case "GET":
+                return HttpMethod.GET;
+            case "PUT":
+                return HttpMethod.PUT;
+            case "DELETE":
+                return HttpMethod.DELETE;
+            case "HEAD":
+                return HttpMethod.HEAD;
+            case "OPTIONS":
+                return HttpMethod.OPTIONS;
+            case "PATCH":
+                return HttpMethod.PATCH;
+            case "TRACE":
+                return HttpMethod.TRACE;
+            default:
+                return null;
+        }
     }
 
 }
