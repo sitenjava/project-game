@@ -1,11 +1,16 @@
 package com.game.service.impl;
 
+import com.game.common.Converters.ImageConverter;
+import com.game.data.dto.ImageDto;
 import com.game.data.entities.Game;
 import com.game.data.entities.Image;
 import com.game.data.repository.GameRepository;
 import com.game.data.repository.ImageRepository;
 import com.game.service.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,27 +29,26 @@ public class ImageService implements IImageService
     private ImageRepository imageRepository;
     @Autowired
     private GameRepository gameRepository;
+    public static ImageConverter imageConverter = ImageConverter.getInstance();
     @Override
     @Transactional
-    public Image save(MultipartFile file , Integer gameId , Integer mapValue)
+    public ImageDto save(MultipartFile file , Integer gameId , Integer mapValue)
     {
         String url = "resources/templates/images/"+file.getOriginalFilename();
         Game game = gameRepository.findById(gameId).get();
         Image image = new Image(url,true,mapValue,game);
-        return imageRepository.save(image);
+        return imageConverter.toDto(imageRepository.save(image));
     }
 
     @Override
     @Transactional
-    public List<Image> save(MultipartFile[] files , Integer gameId , Integer mapValue)
+    public List<ImageDto> save(MultipartFile[] files , Integer gameId , Integer mapValue)
     {
-        List<Image> result = new ArrayList<>();
+        List<ImageDto> result = new ArrayList<>();
         for (MultipartFile file : files)
         {
             try {
-//                File writeFile = new File("/home/truong02_bp/Desktop/intern-java/project-game/src/main/resources/static/images/"+file.getOriginalFilename());
-                File writeFile = new File("images/"+file.getOriginalFilename());
-                System.out.println(writeFile.getAbsoluteFile());
+                File writeFile = new File("src/main/resources/static/images/"+file.getOriginalFilename());
                 FileOutputStream fos = new FileOutputStream(writeFile);
                 byte[] bytes = file.getBytes();
                 fos.write(bytes);
@@ -60,15 +64,29 @@ public class ImageService implements IImageService
     }
 
     @Override
-    @Transactional
-    public void active(Integer[] ids , Boolean active)
+    public List<ImageDto> findAll(Integer gameId, Boolean active, Boolean activePlay,
+                                  String orderBy , String sortDir , Pageable pageable)
     {
-        Image image = null;
-        for (Integer id : ids)
+        if (orderBy != null && sortDir != null)
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageNumber(),
+                    Sort.by(Sort.Direction.valueOf(sortDir),orderBy));
+        return imageConverter.toDto(imageRepository.findAll(gameId,active,activePlay,pageable));
+    }
+
+    @Override
+    @Transactional
+    public void active(ImageDto imageDto)
+    {
+        Integer[] ids = imageDto.getIds();
+        if (imageDto.getActive() != null)
         {
-             image = imageRepository.findById(id).get();
-             image.setActive(active);
-             imageRepository.save(image);
+            for (Integer id : ids)
+                imageRepository.updateActive(id,imageDto.getActive());
+        }
+        else
+        {
+            for (Integer id : ids)
+                imageRepository.updateActivePlay(id,imageDto.getActivePlay());
         }
     }
 

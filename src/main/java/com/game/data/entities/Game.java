@@ -1,10 +1,8 @@
 package com.game.data.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,18 +26,13 @@ public class Game extends BaseEntity
     private Date startTime;
     @Column(name ="end_time")
     private Date end_time;
-    @ManyToMany(mappedBy = "games" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-    private List<User> users;
-//    @JsonBackReference // fix infinite loop ( or using Dto )
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @JoinTable(name = "user_game" , joinColumns = @JoinColumn(name = "game_id") ,
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-    //@JsonManagedReference
-    @OneToMany(mappedBy = "game" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-    private List<Rank> ranks;
-    //@JsonManagedReference
-    @OneToMany(mappedBy = "game" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-    private List<Image> images;
 
     public Category getCategory() {
         return category;
@@ -113,27 +106,12 @@ public class Game extends BaseEntity
         this.end_time = end_time;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
-    public List<Rank> getRanks() {
-        return ranks;
-    }
-
-    public void setRanks(List<Rank> ranks) {
-        this.ranks = ranks;
-    }
-
-    public List<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
 }

@@ -1,14 +1,10 @@
 package com.game.data.dto;
 
-import com.game.data.entities.Category;
-import com.game.data.entities.Image;
-import com.game.data.entities.Rank;
-import com.game.data.entities.User;
-
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-public class GameDto extends BaseDto
+public class GameDto extends BaseDto<GameDto>
 {
     private String name;
     private String description;
@@ -18,10 +14,11 @@ public class GameDto extends BaseDto
     private Boolean isPublic;
     private Date startTime;
     private Date end_time;
-    private List<User> users;
+    private Set<UserDto> users;
     private CategoryDto category;
-    private List<Rank> ranks;
-    private List<Image> images;
+    private List<ImageDto> images;
+
+
 
     public String getName() {
         return name;
@@ -87,14 +84,6 @@ public class GameDto extends BaseDto
         this.end_time = end_time;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
     public CategoryDto getCategory() {
         return category;
     }
@@ -103,19 +92,20 @@ public class GameDto extends BaseDto
         this.category = category;
     }
 
-    public List<Rank> getRanks() {
-        return ranks;
+    public Set<UserDto> getUsers() {
+        return users;
     }
 
-    public void setRanks(List<Rank> ranks) {
-        this.ranks = ranks;
+    public void setUsers(Set<UserDto> users) {
+        this.users = users;
     }
 
-    public List<Image> getImages() {
+
+    public List<ImageDto> getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(List<ImageDto> images) {
         this.images = images;
     }
 }

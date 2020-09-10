@@ -1,9 +1,6 @@
 package com.game.presentation.controller.admin;
 
-import com.game.data.dto.GameDto;
-import com.game.data.dto.ParamDto;
-import com.game.data.entities.Image;
-import com.game.data.entities.Test;
+import com.game.data.dto.ImageDto;
 import com.game.service.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,32 +10,33 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/image/")
+@RequestMapping("/admin/api/image")
 public class ImageController
 {
     @Autowired
     private IImageService iImageService;
-    @PostMapping("upload")
-    public ResponseEntity<List<Image>> uploadImage(@RequestBody MultipartFile[] files,
+
+    @PostMapping("/")
+    public ResponseEntity<List<ImageDto>> uploadImage(@RequestBody MultipartFile[] files,
                                                    @RequestParam("gameId") Integer gameId ,
                                                    @RequestParam("mapValue") Integer mapValue)
     {
-        System.out.println(gameId);
-        System.out.println(mapValue);
-        List<Image> list = iImageService.save(files,gameId,mapValue); // Error path write image to resource
-        return ResponseEntity.ok().header("List image add" , "List image add")
-                .body(list);
+        List<ImageDto>list = iImageService.save(files,gameId,mapValue); // Error path write image to resource
+
+        return ResponseEntity.ok(list);
     }
-    @PutMapping("active")
-    public ResponseEntity<Boolean> activeImage(@RequestBody ParamDto paramDto)
+    @PutMapping("/")
+    public ResponseEntity<String> activeImage(@RequestBody ImageDto imageDto)
     {
-        iImageService.active(paramDto.getIds(),paramDto.getActive());
-        return ResponseEntity.ok(true);
+        System.out.println(imageDto.getActive());
+        System.out.println(imageDto.getActivePlay());
+        iImageService.active(imageDto);
+        return ResponseEntity.ok("Image is actived");
     }
-    @DeleteMapping("remove")
-    public ResponseEntity<Boolean> removeImage(@RequestBody ParamDto paramDto)
+    @DeleteMapping("/")
+    public ResponseEntity<String> removeImage(@RequestBody ImageDto imageDto)
     {
-        iImageService.delete(paramDto.getIds());
-        return ResponseEntity.ok(true);
+        iImageService.delete(imageDto.getIds());
+        return ResponseEntity.ok("Remove is success");
     }
 }

@@ -1,6 +1,6 @@
 package com.game.data.dto;
 
-public class CategoryDto extends BaseDto
+public class CategoryDto extends BaseDto<CategoryDto>
 {
     private String name;
 
