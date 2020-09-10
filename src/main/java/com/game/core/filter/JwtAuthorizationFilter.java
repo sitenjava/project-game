@@ -3,7 +3,7 @@ package com.game.core.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.game.CustomUserDetails;
-import com.game.core.SecurityConstants;
+import com.game.common.SecurityConstants;
 import com.game.data.entities.User;
 import com.game.data.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,7 +43,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // Grab user principal from database and perform authorization
         Authentication authentication = getUsernamePasswordAuthentication(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         chain.doFilter(request, response);
     }
 
@@ -60,7 +59,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     username, null, userDetails.getAuthorities()
             );
         }
-
         return null;
     }
 

@@ -1,9 +1,11 @@
 package com.game.service.impl;
 
 import com.game.common.Converters.ImageConverter;
+import com.game.common.Utils.SecurityUtils;
 import com.game.data.dto.ImageDto;
 import com.game.data.entities.Game;
 import com.game.data.entities.Image;
+import com.game.data.entities.User;
 import com.game.data.repository.GameRepository;
 import com.game.data.repository.ImageRepository;
 import com.game.service.IImageService;
@@ -21,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ImageService implements IImageService
@@ -67,6 +70,9 @@ public class ImageService implements IImageService
     public List<ImageDto> findAll(Integer gameId, Boolean active, Boolean activePlay,
                                   String orderBy , String sortDir , Pageable pageable)
     {
+        Set<User> users = gameRepository.findUsersByGameId(gameId);
+        if (!SecurityUtils.getInstance().isGamePlayer(users))
+            return null;
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageNumber(),
                     Sort.by(Sort.Direction.valueOf(sortDir),orderBy));

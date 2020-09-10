@@ -1,8 +1,11 @@
 package com.game.service.impl;
 
 import com.game.common.Converters.LogConverter;
+import com.game.common.Utils.SecurityUtils;
 import com.game.data.dto.LogDto;
 import com.game.data.entities.Log;
+import com.game.data.entities.User;
+import com.game.data.repository.GameRepository;
 import com.game.data.repository.LogRepository;
 import com.game.service.ILogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +19,27 @@ public class LogService implements ILogService
 {
     @Autowired
     private LogRepository logRepository;
+    @Autowired
+    private GameRepository gameRepository;
     public static LogConverter logConverter = LogConverter.getInstance();
 
     @Override
-    public Set<LogDto> findAllByUserId(Integer userId) {
-        Set<Log> logs = logRepository.findAllByUserId(userId);
+    public Set<LogDto> findAllByUserIdAndGameId(Integer userId , Integer gameId) {
+        Set<User> users = gameRepository.findUsersByGameId(gameId);
+        if (!SecurityUtils.getInstance().isGamePlayer(users))
+            return null;
+        Set<Log> logs = logRepository.findAllByUserIdAndGameId(userId,gameId);
         return logConverter.toDto(logs);
     }
 
     @Override
     @Transactional
-    public void delete(Integer userId)
+    public void delete(Integer userId , Integer gameId)
     {
-        logRepository.deleteAllByUserId(userId);
+        Set<User> users = gameRepository.findUsersByGameId(gameId);
+        if (!SecurityUtils.getInstance().isGamePlayer(users))
+            return;
+        logRepository.deleteAllByUserId(userId,gameId);
     }
 
     @Override
@@ -39,13 +50,4 @@ public class LogService implements ILogService
         return logConverter.toDto(logRepository.save(log));
     }
 
-    @Override
-    @Transactional
-    public void save(LogDto[] logs)
-    {
-        for (LogDto log : logs)
-        {
-            log = save(log);
-        }
-    }
 }

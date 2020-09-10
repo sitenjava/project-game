@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+</head>
+<body>
+<header th:insert="fragments.html :: nav"></header>
+<div class="container">
+    <p>This is admin\index. Only admin can see this.</p>
+</div>
+
+</body>
+</html>

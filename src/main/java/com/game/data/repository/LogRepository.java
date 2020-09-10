@@ -10,11 +10,11 @@ import java.util.Set;
 
 public interface LogRepository extends JpaRepository<Log, Integer>
 {
-    @Modifying
-    @Query(value = "delete from log where user_id = :userid" , nativeQuery = true)
-    void deleteAllByUserId(@Param("userid") Integer userid);
+    @Query(value = "delete from Log l where l.user.id = :userid and l.image.game.id = :gameId")
+    void deleteAllByUserId(@Param("userid") Integer userid,
+                           @Param("gameId") Integer gameId);
 
-    @Modifying
-    @Query(value = "select * from log where user_id = :userid" , nativeQuery = true)
-    Set<Log> findAllByUserId(@Param("userid") Integer userid);
+    @Query(value = "select l from Log l where l.user.id = :userid and l.image.game.id = :gameId")
+    Set<Log> findAllByUserIdAndGameId(@Param("userid") Integer userid ,
+                             @Param("gameId") Integer gameId);
 }

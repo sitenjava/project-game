@@ -1,4 +1,4 @@
-package com.game.data.dto;
+package com.game.common.Utils;
 
 public class ErrorMessage
 {

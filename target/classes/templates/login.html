@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login to web</title>
+
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+
+    <form method="post" th:action="@{/login}">
+
+        <!--Notification-->
+        <div th:if="${param.error}">
+            <div class="alert alert-danger">Invalid username and password.</div>
+        </div>
+        <div th:if="${param.logout}">
+            <div class="alert alert-info">You have been logged out.</div>
+        </div>
+
+        <h2>Login to your account</h2>
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input autofocus="autofocus" class="form-control" id="username" name="username"
+                   placeholder="Enter your username" required
+                   type="text"/>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input autofocus="autofocus" class="form-control" id="password" name="password"
+                   placeholder="Enter your password" required
+                   type="password"/>
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                <label class="form-check-label" for="remember-me">Remember me</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" id="login-submit"
+                    name="login-submit" type="submit">Login
+            </button>
+            <span> Forgot your password? <a th:href="@{/recover}">Recover here.</a></span>
+        </div>
+
+        <div class="form-group">
+            <span> New user? <a th:href="@{/registration}">Register here.</a></span>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

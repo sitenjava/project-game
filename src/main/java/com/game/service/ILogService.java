@@ -6,8 +6,7 @@ import java.util.Set;
 
 public interface ILogService
 {
-    Set<LogDto> findAllByUserId(Integer userId);
-    void delete(Integer userId);
+    Set<LogDto> findAllByUserIdAndGameId(Integer userId ,Integer gameId);
+    void delete(Integer userId  , Integer gameId);
     LogDto save(LogDto logDto);
-    void  save(LogDto[] logs);
 }

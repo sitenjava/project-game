@@ -2,6 +2,7 @@ package com.game.service.impl;
 
 import com.game.common.Converters.GameConverter;
 import com.game.common.Converters.UserConverter;
+import com.game.common.Utils.SecurityUtils;
 import com.game.data.dto.GameDto;
 import com.game.data.entities.Game;
 import com.game.data.entities.User;
@@ -66,6 +67,11 @@ public class GameService implements IGameService {
     public List<GameDto> findAll(Integer categoryId, Boolean active, String orderBy, String sortDir, Pageable pageable) {
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), (int) pageable.getPageSize(), Sort.Direction.valueOf(sortDir), orderBy);
-        return gameConverter.toDto(gameRepository.findAll(categoryId, active, pageable));
+        List<Game> games = gameRepository.findAll(categoryId, active, pageable);
+        if (!SecurityUtils.getInstance().isAdmin())
+            games.forEach(game -> {
+                game.setUsers(null);
+            });
+        return gameConverter.toDto(games);
     }
 }

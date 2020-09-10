@@ -27,6 +27,7 @@ public class RankController
         List<RankDto> ranks = iRankService.findAll(gameId,pageable);
         return ResponseEntity.ok(ranks);
     }
+    // params : time or score , Object user with id , Object game with id
     @PostMapping("/")
     public ResponseEntity<RankDto> addRank(@RequestBody RankDto rankDto)
     {

@@ -66,6 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.csrf().disable().authorizeRequests().antMatchers("/*").permitAll();
         http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -73,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
 
         http.authorizeRequests()
-                .antMatchers("/registration", "/").permitAll()
+                .antMatchers("/registration", "/*").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
 
@@ -130,8 +131,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             });*/
         });
-
-        http.authorizeRequests().anyRequest().authenticated()
+//        .anyRequest().authenticated()
+        http.authorizeRequests()
                 .and()
                 .formLogin()
                 .loginPage("/login").loginProcessingUrl("/login")

@@ -1,4 +1,4 @@
-package com.game.core;
+package com.game.common;
 
 public class SecurityConstants {
     public static final String JWT_SECRET = "sit3n";

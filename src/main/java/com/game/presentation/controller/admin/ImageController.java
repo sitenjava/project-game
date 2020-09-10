@@ -16,6 +16,7 @@ public class ImageController
     @Autowired
     private IImageService iImageService;
 
+    // params : Images , Id of Game , mapValue of image
     @PostMapping("/")
     public ResponseEntity<List<ImageDto>> uploadImage(@RequestBody MultipartFile[] files,
                                                    @RequestParam("gameId") Integer gameId ,
@@ -25,14 +26,14 @@ public class ImageController
 
         return ResponseEntity.ok(list);
     }
+    // params : Ids of images  , active or activePlay
     @PutMapping("/")
     public ResponseEntity<String> activeImage(@RequestBody ImageDto imageDto)
     {
-        System.out.println(imageDto.getActive());
-        System.out.println(imageDto.getActivePlay());
         iImageService.active(imageDto);
         return ResponseEntity.ok("Image is actived");
     }
+    // params : Ids of images
     @DeleteMapping("/")
     public ResponseEntity<String> removeImage(@RequestBody ImageDto imageDto)
     {

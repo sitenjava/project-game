@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <!--Notification-->
+    <div th:if="${param.success}">
+        <div class="alert alert-success">You have created account successfully!</div>
+    </div>
+
+    <div th:if="${param.error}">
+        <div class="alert alert-danger">Username is already exist!</div>
+    </div>
+
+    <h2>Registration</h2>
+
+    <form method="post" th:action="@{/registration}" th:object="${user}">
+        <div class="form-group">
+            <label class="control-label" for="username">Username</label>
+            <input autofocus="autofocus" class="form-control" id="username" required th:field="*{username}"
+                   type="text"/>
+            <span class="text-danger" th:errors="*{username}" th:if="${#fields.hasErrors('username')}"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="password">Password</label>
+            <input autofocus="autofocus" class="form-control" id="password" required th:field="*{password}"
+                   type="password"/>
+            <span class="text-danger" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="retypePassword">Re-type Password</label>
+            <input autofocus="autofocus" class="form-control" id="retypePassword" required th:field="*{retypePassword}"
+                   type="password"/>
+            <span class="text-danger" th:errors="*{retypePassword}" th:if="${#fields.hasErrors('retypePassword')}"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="email">Email</label>
+            <input autofocus="autofocus" class="form-control" id="email" required th:field="*{email}" type="email"/>
+            <span class="text-danger" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="name">Name</label>
+            <input autofocus="autofocus" class="form-control" id="name" required th:field="*{name}" type="text"/>
+            <span class="text-danger" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></span>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-success" type="submit">Register</button>
+            <span> Already have an account? <a th:href="@{/login}">Login here.</a></span>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
