@@ -33,14 +33,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     SecurityHandler securityHandler;
+
     @Autowired
     private IUserService userService;
+
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private ActionRepository actionRepository;
+
     @Autowired
     private RedirectionRepository redirectionRepository;
 
