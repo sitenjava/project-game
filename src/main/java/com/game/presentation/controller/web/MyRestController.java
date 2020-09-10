@@ -1,8 +1,6 @@
 package com.game.presentation.controller.web;
 
-import com.game.UserNotFoundException;
 import com.game.data.entities.User;
-import com.game.data.repository.UserRepository;
 import com.game.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +47,7 @@ public class MyRestController {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/user/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
     }
@@ -65,7 +63,7 @@ public class MyRestController {
         return new ResponseEntity<>("You have deleted user with id " + id, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/{username}")
+    @DeleteMapping("/user/username/{username}")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
         userService.deleteUserByUsername(username);
         return new ResponseEntity<>("You have deleted user with username '" + username + "'", HttpStatus.OK);
