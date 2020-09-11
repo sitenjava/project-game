@@ -1,4 +1,4 @@
-package com.game.common.Converters;
+package com.game.common.converters;
 
 import com.game.data.dto.ImageDto;
 import com.game.data.entities.Image;

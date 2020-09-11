@@ -1,6 +1,6 @@
 package com.game.core.config;
 
-import com.game.CustomAuthenticationEntryPoint;
+import com.game.common.CustomAuthenticationEntryPoint;
 import com.game.SecurityHandler;
 import com.game.core.filter.JwtAuthenticationFilter;
 import com.game.core.filter.JwtAuthorizationFilter;
@@ -74,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
 
         http.authorizeRequests()
+                .antMatchers("/*").permitAll()
                 .antMatchers("/registration", "/*").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");

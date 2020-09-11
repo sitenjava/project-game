@@ -1,4 +1,4 @@
-package com.game.common.Converters;
+package com.game.common.converters;
 
 import com.game.data.dto.LogDto;
 import com.game.data.entities.Log;
@@ -29,12 +29,12 @@ public class LogConverter
     }
     public Set<LogDto> toDto(Set<Log> logs)
     {
-        Set<LogDto> logDtos = new HashSet<>();
-        if (logs.size()==0)
+        Set<LogDto> dtos = new HashSet<>();
+        if (logs == null || logs.isEmpty())
             return null;
         for (Log log : logs) {
-            logDtos.add(toDto(log));
+            dtos.add(toDto(log));
         }
-        return logDtos;
+        return dtos;
     }
 }

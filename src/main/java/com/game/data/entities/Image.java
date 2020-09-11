@@ -22,11 +22,12 @@ public class Image  extends BaseEntity
     public Image() {
     }
 
-    public Image(String link, Boolean active, Integer value, Game game) {
+    public Image(String link, Boolean active, Boolean activePlay ,Integer value, Game game) {
         this.link = link;
         this.active = active;
         this.value = value;
         this.game = game;
+        this.activePlay = activePlay;
     }
 
     public Boolean getActivePlay() {

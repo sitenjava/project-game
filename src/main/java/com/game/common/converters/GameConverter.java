@@ -1,4 +1,4 @@
-package com.game.common.Converters;
+package com.game.common.converters;
 
 import com.game.data.dto.GameDto;
 import com.game.data.entities.Game;
@@ -25,8 +25,7 @@ public class GameConverter
     }
     public GameDto toDto(Game game)
     {
-        GameDto gameDto = modelMapper.map(game,GameDto.class);
-        return gameDto;
+        return modelMapper.map(game,GameDto.class);
     }
     public Game toEntity(GameDto gameDto)
     {
@@ -36,7 +35,7 @@ public class GameConverter
     public List<GameDto> toDto(List<Game> games)
     {
         List<GameDto> list = new ArrayList<>();
-        if (games.size()==0)
+        if (games == null || games.isEmpty())
             return null;
         for (Game game : games) {
             list.add(toDto(game));
@@ -46,7 +45,7 @@ public class GameConverter
     public List<Game> toEntity(List<GameDto> games)
     {
         List<Game> list = new ArrayList<>();
-        if (games.size()==0)
+        if (games == null || games.isEmpty())
             return null;
         for (GameDto game : games) {
             list.add(toEntity(game));

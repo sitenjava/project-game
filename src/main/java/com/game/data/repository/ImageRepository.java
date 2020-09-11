@@ -24,4 +24,6 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
     @Modifying
     @Query(value = "update image_lat_hinh set active_play=:activePlay where id=:id", nativeQuery = true)
     void updateActivePlay(@Param("id") Integer id, @Param("activePlay") Boolean activePlay);
+    @Query(value = "select i.link from Image i where i.id=:id")
+    String getLinkImage(@Param("id") Integer id);
 }

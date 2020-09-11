@@ -1,6 +1,6 @@
 package com.game.service.impl;
 
-import com.game.common.Converters.RankConverter;
+import com.game.common.converters.RankConverter;
 import com.game.data.dto.RankDto;
 import com.game.data.entities.Rank;
 import com.game.data.repository.RankRepository;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class RankService implements IRankService

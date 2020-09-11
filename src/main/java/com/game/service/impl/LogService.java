@@ -1,7 +1,9 @@
 package com.game.service.impl;
 
-import com.game.common.Converters.LogConverter;
-import com.game.common.Utils.SecurityUtils;
+import com.game.common.MessageConstants;
+import com.game.common.converters.LogConverter;
+import com.game.common.exception.APIException;
+import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.LogDto;
 import com.game.data.entities.Log;
 import com.game.data.entities.User;
@@ -9,6 +11,7 @@ import com.game.data.repository.GameRepository;
 import com.game.data.repository.LogRepository;
 import com.game.service.ILogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,7 @@ public class LogService implements ILogService
     public Set<LogDto> findAllByUserIdAndGameId(Integer userId , Integer gameId) {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
         if (!SecurityUtils.getInstance().isGamePlayer(users))
-            return null;
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
         Set<Log> logs = logRepository.findAllByUserIdAndGameId(userId,gameId);
         return logConverter.toDto(logs);
     }
@@ -38,7 +41,7 @@ public class LogService implements ILogService
     {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
         if (!SecurityUtils.getInstance().isGamePlayer(users))
-            return;
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
         logRepository.deleteAllByUserId(userId,gameId);
     }
 

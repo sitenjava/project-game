@@ -1,7 +1,6 @@
-package com.game.common.Utils;
+package com.game.common.utils;
 
 import com.game.CustomUserDetails;
-import com.game.data.entities.Game;
 import com.game.data.entities.User;
 import com.game.data.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 @Component
@@ -29,9 +27,10 @@ public class SecurityUtils {
     }
     public boolean isGamePlayer(Set<User> users)
     {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated())
             return false;
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         for (User user : users)
             if (user.getId() == userDetails.getUser().getId())
                 return true;
@@ -39,9 +38,9 @@ public class SecurityUtils {
     }
     public List<String> getRoles()
     {
-        List<GrantedAuthority> auAthorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         List<String> roles = new ArrayList<>();
-        auAthorities.forEach(grantedAuthority -> {
+        authorities.forEach(grantedAuthority -> {
             roles.add(grantedAuthority.getAuthority());
         });
         return roles;

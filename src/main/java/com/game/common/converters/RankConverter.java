@@ -1,4 +1,4 @@
-package com.game.common.Converters;
+package com.game.common.converters;
 
 import com.game.data.dto.RankDto;
 import com.game.data.entities.Rank;
@@ -31,7 +31,7 @@ public class RankConverter
     public List<RankDto> toDto(List<Rank> ranks)
     {
         List<RankDto> result = new ArrayList<>();
-        if (ranks.size()==0)
+        if (ranks == null || ranks.isEmpty())
             return null;
         for (Rank rank : ranks) {
             result.add(toDto(rank));

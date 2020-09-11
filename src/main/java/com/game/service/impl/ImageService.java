@@ -1,7 +1,9 @@
 package com.game.service.impl;
 
-import com.game.common.Converters.ImageConverter;
-import com.game.common.Utils.SecurityUtils;
+import com.game.common.MessageConstants;
+import com.game.common.converters.ImageConverter;
+import com.game.common.exception.APIException;
+import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.ImageDto;
 import com.game.data.entities.Game;
 import com.game.data.entities.Image;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,9 +40,9 @@ public class ImageService implements IImageService
     @Transactional
     public ImageDto save(MultipartFile file , Integer gameId , Integer mapValue)
     {
-        String url = "resources/templates/images/"+file.getOriginalFilename();
+        String url = "images/"+file.getOriginalFilename();
         Game game = gameRepository.findById(gameId).get();
-        Image image = new Image(url,true,mapValue,game);
+        Image image = new Image(url,true,false,mapValue,game);
         return imageConverter.toDto(imageRepository.save(image));
     }
 
@@ -72,13 +75,14 @@ public class ImageService implements IImageService
     {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
         if (!SecurityUtils.getInstance().isGamePlayer(users))
-            return null;
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageNumber(),
                     Sort.by(Sort.Direction.valueOf(sortDir),orderBy));
         return imageConverter.toDto(imageRepository.findAll(gameId,active,activePlay,pageable));
     }
 
+    // save list
     @Override
     @Transactional
     public void active(ImageDto imageDto)
@@ -88,8 +92,9 @@ public class ImageService implements IImageService
         {
             for (Integer id : ids)
                 imageRepository.updateActive(id,imageDto.getActive());
+            return;
         }
-        else
+        if (imageDto.getActivePlay() != null)
         {
             for (Integer id : ids)
                 imageRepository.updateActivePlay(id,imageDto.getActivePlay());
@@ -99,6 +104,9 @@ public class ImageService implements IImageService
     @Override
     public void delete(Integer[] ids) {
         for (Integer id : ids) {
+            String link = imageRepository.getLinkImage(id);
+            File file = new File ("src/main/resources/static/"+link);
+            boolean remove = file.delete();
             imageRepository.deleteById(id);
         }
     }

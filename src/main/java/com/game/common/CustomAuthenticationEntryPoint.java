@@ -1,4 +1,4 @@
-package com.game;
+package com.game.common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,9 +20,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         try {
             httpServletResponse.getWriter().write(
                     new JSONObject()
-                            .put("timestamp", LocalDateTime.now())
                             .put("status", 403)
-                            .put("message", "Truy cập bị từ chối")
+                            .put("message", MessageConstants.Access_Denied)
                             .toString()
             );
         } catch (JSONException ex) {

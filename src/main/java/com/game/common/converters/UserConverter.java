@@ -1,4 +1,4 @@
-package com.game.common.Converters;
+package com.game.common.converters;
 
 import com.game.data.dto.UserDto;
 import com.game.data.entities.User;
@@ -31,7 +31,7 @@ public class UserConverter
     public List<UserDto> toDto(List<User> users)
     {
         List<UserDto> list = new ArrayList<>();
-        if (users == null)
+        if (users == null || users.isEmpty())
             return null;
         for (User user : users) {
             list.add(toDto(user));
@@ -41,7 +41,7 @@ public class UserConverter
     public List<User> toEntity(List<UserDto> users)
     {
         List<User> list = new ArrayList<>();
-        if (users == null)
+        if (users == null || users.isEmpty())
             return null;
         for (UserDto user : users) {
             list.add(toEntity(user));

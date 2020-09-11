@@ -11,9 +11,9 @@ public class BaseDto<T>
     private Boolean activePlay;
     private String action;
     private String sort;
-    private Integer limit = 6;
+    private Integer limit;
     private Integer totalPage;
-    private Integer page = 1;
+    private Integer page;
     private List<T> list;
     protected String creator;
     protected Date createdTime;
