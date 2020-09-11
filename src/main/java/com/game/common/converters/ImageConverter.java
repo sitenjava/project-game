@@ -36,7 +36,7 @@ public class ImageConverter
     public List<ImageDto> toDto(List<Image> images)
     {
         List<ImageDto> list = new ArrayList<>();
-        if (images.size()==0)
+        if (images == null || images.isEmpty())
             return null;
         for (Image image  : images) {
             list.add(toDto(image));

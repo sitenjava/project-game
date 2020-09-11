@@ -1,4 +1,4 @@
-package com.game.common.Utils;
+package com.game.common.utils;
 
 public class ErrorMessage
 {

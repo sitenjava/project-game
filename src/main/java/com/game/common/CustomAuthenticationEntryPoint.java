@@ -22,7 +22,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                     new JSONObject()
                             .put("timestamp", LocalDateTime.now())
                             .put("status", 403)
-                            .put("message", "Access denied")
+                            .put("message", "Truy cập bị từ chối")
                             .toString()
             );
         } catch (JSONException ex) {
