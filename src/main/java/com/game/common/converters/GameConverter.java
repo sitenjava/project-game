@@ -2,10 +2,12 @@ package com.game.common.converters;
 
 import com.game.data.dto.GameDto;
 import com.game.data.entities.Game;
+import com.game.data.entities.User;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GameConverter
 {
@@ -29,8 +31,7 @@ public class GameConverter
     }
     public Game toEntity(GameDto gameDto)
     {
-        Game game = modelMapper.map(gameDto,Game.class);
-        return game;
+        return modelMapper.map(gameDto,Game.class);
     }
     public List<GameDto> toDto(List<Game> games)
     {

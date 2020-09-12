@@ -22,6 +22,7 @@ public class APIException extends RuntimeException {
         return this;
     }
 
+
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }

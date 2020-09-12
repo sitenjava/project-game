@@ -1,5 +1,6 @@
 package com.game.presentation.controller.web;
 
+import com.game.common.exception.APIException;
 import com.game.data.dto.GameDto;
 import com.game.service.IGameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,7 @@ public class GameController
                                                  @RequestParam(value = "page" , required = false) Integer page,
                                                  @RequestParam(value = "limit" , required = false) Integer limit)
     {
-        Pageable pageable = PageRequest.of(page-1,limit);
-        List<GameDto> list = iGameService.findAll(categoryId,active,orderBy,sortDir,pageable);
+        List<GameDto> list = iGameService.findAll(categoryId,active,orderBy,sortDir,page,limit);
         return ResponseEntity.ok(list);
     }
     @GetMapping("/{id}")

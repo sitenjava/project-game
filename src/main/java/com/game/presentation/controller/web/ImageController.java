@@ -21,13 +21,12 @@ public class ImageController
     public ResponseEntity<List<ImageDto>> getImageActive(@PathVariable Integer gameId,
                                                          @RequestParam(value = "activePlay" , required = false) Boolean activePlay,
                                                          @RequestParam(value = "active" , required = false) Boolean active,
-                                                         @RequestParam(value = "page") Integer page,
-                                                         @RequestParam(value = "limit") Integer limit,
+                                                         @RequestParam(value = "page" , required = false) Integer page,
+                                                         @RequestParam(value = "limit" , required = false) Integer limit,
                                                          @RequestParam(value = "sortDir" , required = false) String sortDir,
                                                          @RequestParam(value = "orderBy" , required = false) String orderBy)
     {
-        Pageable pageable = PageRequest.of(page-1,limit);
-        List<ImageDto> list = iImageService.findAll(gameId,active,activePlay,orderBy,sortDir,pageable);
+        List<ImageDto> list = iImageService.findAll(gameId,active,activePlay,orderBy,sortDir, page,limit);
         return ResponseEntity.ok(list);
     }
 }

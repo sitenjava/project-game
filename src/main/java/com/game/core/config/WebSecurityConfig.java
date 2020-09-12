@@ -66,40 +66,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable().authorizeRequests().antMatchers("/*").permitAll();
-        http.cors().and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
-
-        http.authorizeRequests()
-                .antMatchers("/*").permitAll()
-                .antMatchers("/registration", "/*").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
-
-        redirectionRepository.getDirections().forEach(redirection -> {
-            try {
-                HttpMethod httpMethod = getHttpMethod(redirection);
-                http.authorizeRequests().antMatchers(httpMethod, redirection.getUrl().getLink())
-                        .hasAuthority(redirection.getRole().getName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-//        .anyRequest().authenticated()
-        http.authorizeRequests()
-                .and()
-                .formLogin()
-                .loginPage("/login").loginProcessingUrl("/login")
-                .defaultSuccessUrl("/index.html", true).permitAll()
-                .and().logout().invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").permitAll()
-                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret")
-                .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
+        http.csrf().disable().authorizeRequests().antMatchers("/*").permitAll();
+//        http.cors().and().csrf().disable()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+//                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
+//
+//        http.authorizeRequests()
+//                .antMatchers("/*").permitAll()
+//                .antMatchers("/registration", "/*").permitAll()
+//                .antMatchers("/admin/**").hasAuthority("ADMIN")
+//                .antMatchers(HttpMethod.POST, "/").hasAuthority("USER");
+//
+//        redirectionRepository.getDirections().forEach(redirection -> {
+//            try {
+//                HttpMethod httpMethod = getHttpMethod(redirection);
+//                http.authorizeRequests().antMatchers(httpMethod, redirection.getUrl().getLink())
+//                        .hasAuthority(redirection.getRole().getName());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+////        .anyRequest().authenticated()
+//        http.authorizeRequests()
+//                .and()
+//                .formLogin()
+//                .loginPage("/login").loginProcessingUrl("/login")
+//                .defaultSuccessUrl("/index.html", true).permitAll()
+//                .and().logout().invalidateHttpSession(true)
+//                .clearAuthentication(true)
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/login?logout").permitAll()
+//                .and().rememberMe().tokenValiditySeconds(604800).key("mySecret")
+//                .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
     }
 
     @Bean

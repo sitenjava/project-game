@@ -6,27 +6,17 @@ import java.util.List;
 public class BaseDto<T>
 {
     protected Integer id;
-    private Integer[] ids;
-    private Boolean active;
-    private Boolean activePlay;
-    private String action;
-    private String sort;
-    private Integer limit;
-    private Integer totalPage;
-    private Integer page;
-    private List<T> list;
+    protected Integer[] ids;
+    protected String action;
+    protected String sort;
+    protected Integer limit;
+    protected Integer totalPage;
+    protected Integer page;
+    protected List<T> list;
     protected String creator;
     protected Date createdTime;
     protected String modifier;
     protected Date modifiedTime;
-
-    public Boolean getActivePlay() {
-        return activePlay;
-    }
-
-    public void setActivePlay(Boolean activePlay) {
-        this.activePlay = activePlay;
-    }
 
     public String getSort() {
         return sort;
@@ -74,14 +64,6 @@ public class BaseDto<T>
 
     public void setIds(Integer[] ids) {
         this.ids = ids;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     public String getAction() {

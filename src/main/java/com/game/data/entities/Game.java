@@ -1,5 +1,7 @@
 package com.game.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,8 +31,8 @@ public class Game extends BaseEntity
     @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @JoinTable(name = "user_game" , joinColumns = @JoinColumn(name = "game_id") ,
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> users = new HashSet<>();
-    @ManyToOne(fetch = FetchType.LAZY)
+    private Set<User> users;
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 

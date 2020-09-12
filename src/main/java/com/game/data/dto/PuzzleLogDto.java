@@ -3,7 +3,7 @@ package com.game.data.dto;
 public class PuzzleLogDto extends BaseDto<PuzzleLogDto> {
 	private Boolean activeQuestion;
 	private Integer time;
-	private QuestionsDto questionID;
+	private QuestionDto questionID;
 	public Boolean getActiveQuestion() {
 		return activeQuestion;
 	}
@@ -16,10 +16,10 @@ public class PuzzleLogDto extends BaseDto<PuzzleLogDto> {
 	public void setTime(Integer time) {
 		this.time = time;
 	}
-	public QuestionsDto getQuestionID() {
+	public QuestionDto getQuestionID() {
 		return questionID;
 	}
-	public void setQuestionID(QuestionsDto questionID) {
+	public void setQuestionID(QuestionDto questionID) {
 		this.questionID = questionID;
 	}
 	

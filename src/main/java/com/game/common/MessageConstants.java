@@ -9,4 +9,5 @@ public class MessageConstants {
     public static final String Not_Gamer = "Không có quyền chơi game này ! Hãy xin quyền chơi";
     public static final String Bad_Request = "Dữ truyền vào không đúng định dạng";
     public static final String Game_Not_Found = "Không tìm thấy game nào";
+    public static final String Page_And_Limit_Not_Null = "Page và limit phải khác null";
 }

@@ -35,7 +35,7 @@ public class ImageService implements IImageService
     private ImageRepository imageRepository;
     @Autowired
     private GameRepository gameRepository;
-    public static ImageConverter imageConverter = ImageConverter.getInstance();
+    private static ImageConverter imageConverter = ImageConverter.getInstance();
     @Override
     @Transactional
     public ImageDto save(MultipartFile file , Integer gameId , Integer mapValue)
@@ -71,8 +71,11 @@ public class ImageService implements IImageService
 
     @Override
     public List<ImageDto> findAll(Integer gameId, Boolean active, Boolean activePlay,
-                                  String orderBy , String sortDir , Pageable pageable)
+                                  String orderBy, String sortDir, Integer page, Integer limit)
     {
+        if (page == null || limit == null)
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+        Pageable pageable = PageRequest.of(page-1,limit);
         Set<User> users = gameRepository.findUsersByGameId(gameId);
         if (!SecurityUtils.getInstance().isGamePlayer(users))
             throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);

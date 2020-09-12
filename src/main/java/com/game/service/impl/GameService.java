@@ -2,7 +2,6 @@ package com.game.service.impl;
 
 import com.game.common.MessageConstants;
 import com.game.common.converters.GameConverter;
-import com.game.common.converters.UserConverter;
 import com.game.common.exception.APIException;
 import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.GameDto;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -52,7 +50,9 @@ public class GameService implements IGameService {
             throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Bad_Request);
         if (action.equals("add")) {
             for (Integer id : ids)
+            {
                 users.add(userRepository.findById(id).orElseThrow(APIException::new));
+            }
         } else if (action.equals("remove")) {
             for (Integer id : ids)
                 users.removeIf(user -> user.getId() == id);
@@ -63,13 +63,22 @@ public class GameService implements IGameService {
     }
 
     @Override
+    @Transactional
     public GameDto findById(Integer id) {
-        Game game = gameRepository.findById(id).orElseThrow(APIException::new);
+        Game game = gameRepository.findById(id).orElse(null);
+        if (game == null)
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Game_Not_Found);
+        if (!SecurityUtils.getInstance().isAdmin())
+            game.setUsers(null);
         return gameConverter.toDto(game);
     }
 
     @Override
-    public List<GameDto> findAll(Integer categoryId, Boolean active, String orderBy, String sortDir, Pageable pageable) {
+    @Transactional
+    public List<GameDto> findAll(Integer categoryId, Boolean active, String orderBy, String sortDir, Integer page, Integer limit) {
+        if (page == null || limit == null)
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+        Pageable pageable = PageRequest.of(page-1,limit);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.valueOf(sortDir), orderBy);
         List<Game> games = gameRepository.findAll(categoryId, active, pageable);

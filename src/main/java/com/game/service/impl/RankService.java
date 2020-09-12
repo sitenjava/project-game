@@ -1,12 +1,16 @@
 package com.game.service.impl;
 
+import com.game.common.MessageConstants;
 import com.game.common.converters.RankConverter;
+import com.game.common.exception.APIException;
 import com.game.data.dto.RankDto;
 import com.game.data.entities.Rank;
 import com.game.data.repository.RankRepository;
 import com.game.service.IRankService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +31,11 @@ public class RankService implements IRankService
     }
 
     @Override
-    public List<RankDto> findAll(Integer gameId , Pageable pageable)
+    public List<RankDto> findAll(Integer gameId, Integer page, Integer limit)
     {
+        if (page == null || limit == null)
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+        Pageable pageable = PageRequest.of(page-1,limit);
         return rankConverter.toDto(rankRepository.findAllByGameId(gameId,pageable));
     }
 }
