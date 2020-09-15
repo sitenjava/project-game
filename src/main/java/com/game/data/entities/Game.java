@@ -32,7 +32,7 @@ public class Game extends BaseEntity
     @JoinTable(name = "user_game" , joinColumns = @JoinColumn(name = "game_id") ,
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 

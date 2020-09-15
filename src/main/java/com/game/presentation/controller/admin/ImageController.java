@@ -16,6 +16,19 @@ public class ImageController
     @Autowired
     private IImageService iImageService;
 
+    // page and limit not null
+    @GetMapping("/{gameId}")
+    public ResponseEntity<List<ImageDto>> getImage(@PathVariable Integer gameId,
+                                                   @RequestParam(value = "activePlay" , required = false) Boolean activePlay,
+                                                   @RequestParam(value = "active" , required = false) Boolean active,
+                                                   @RequestParam(value = "page" , required = false) Integer page,
+                                                   @RequestParam(value = "limit" , required = false) Integer limit,
+                                                   @RequestParam(value = "sortDir" , required = false) String sortDir,
+                                                   @RequestParam(value = "orderBy" , required = false) String orderBy)
+    {
+        List<ImageDto> list = iImageService.findAll(gameId,active,activePlay,orderBy,sortDir, page,limit);
+        return ResponseEntity.ok(list);
+    }
     // params : Images , Id of Game , mapValue of image
     @PostMapping("/")
     public ResponseEntity<List<ImageDto>> uploadImage(@RequestBody MultipartFile[] files,

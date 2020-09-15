@@ -4,6 +4,9 @@ import com.game.data.dto.QuestionDto;
 import com.game.data.entities.Question;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QuestionConverter {
     private ModelMapper modelMapper = new ModelMapper();
     private static QuestionConverter questionConverter = null;
@@ -19,6 +22,14 @@ public class QuestionConverter {
     public QuestionDto toDto(Question question)
     {
         return modelMapper.map(question , QuestionDto.class);
+    }
+    public List<QuestionDto> toDto(List<Question> questions)
+    {
+        List<QuestionDto> result = new ArrayList<>();
+        questions.forEach(question -> {
+            result.add(toDto(question));
+        });
+        return result;
     }
     public Question toEntity(QuestionDto questionDto)
     {

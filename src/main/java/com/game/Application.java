@@ -20,7 +20,7 @@ public class Application {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(Application.class, args);
 
-        initDatabase(context);
+//        initDatabase(context);
     }
 
     private static void initDatabase(ApplicationContext context) {

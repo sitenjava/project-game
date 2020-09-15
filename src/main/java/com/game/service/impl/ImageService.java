@@ -3,8 +3,8 @@ package com.game.service.impl;
 import com.game.common.MessageConstants;
 import com.game.common.converters.ImageConverter;
 import com.game.common.exception.APIException;
-import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.ImageDto;
+import com.game.data.dto.QuestionDto;
 import com.game.data.entities.Game;
 import com.game.data.entities.Image;
 import com.game.data.entities.User;
@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -70,19 +71,56 @@ public class ImageService implements IImageService
     }
 
     @Override
+    @Transactional
     public List<ImageDto> findAll(Integer gameId, Boolean active, Boolean activePlay,
-                                  String orderBy, String sortDir, Integer page, Integer limit)
+                                       String orderBy, String sortDir, Integer page, Integer limit)
     {
         if (page == null || limit == null)
             throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
         Pageable pageable = PageRequest.of(page-1,limit);
         Set<User> users = gameRepository.findUsersByGameId(gameId);
-        if (!SecurityUtils.getInstance().isGamePlayer(users))
-            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+//        if (!SecurityUtils.getInstance().isGamePlayer(users))
+//            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageNumber(),
                     Sort.by(Sort.Direction.valueOf(sortDir),orderBy));
-        return imageConverter.toDto(imageRepository.findAll(gameId,active,activePlay,pageable));
+        List<Image> images = imageRepository.findAll(gameId,active,activePlay,pageable);
+        if (images == null || images.isEmpty())
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Image_Not_Found);
+        return imageConverter.toDto(images);
+    }
+
+//    @Override
+//    @Transactional
+//    public List<ImageDto> findAllByActivePlay(Integer gameId) {
+//        Set<User> users = gameRepository.findUsersByGameId(gameId);
+////        if (!SecurityUtils.getInstance().isGamePlayer(users))
+////            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+//        List<Image> images = imageRepository.getLinkImages(gameId);
+//        if (images == null || images.isEmpty())
+//            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Image_Not_Found);
+//        return imageConverter.toDto(images);
+//    }
+    @Override
+    @Transactional
+    public List<ImageDto> findAllByActivePlay(Integer gameId) {
+        Set<User> users = gameRepository.findUsersByGameId(gameId);
+    //        if (!SecurityUtils.getInstance().isGamePlayer(users))
+    //            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+        List<Object> images = imageRepository.getLinkImages(gameId);
+        if (images == null || images.isEmpty())
+            throw  APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Not_Found);
+        List<ImageDto> result = new ArrayList<>();
+
+        for (int i=0;i<images.size();i++)
+        {
+            Object[] object = (Object[]) images.get(i);
+            ImageDto imageDto = ImageDto.from((String) object[2])
+                    .value((Integer) object[1])
+                    .id((Integer) object[0]);
+            result.add(imageDto);
+        }
+        return result;
     }
 
     // save list
