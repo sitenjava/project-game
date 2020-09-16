@@ -20,11 +20,10 @@ public class RankController
     private IRankService iRankService;
     @GetMapping("/")
     public ResponseEntity<List<RankDto>> getRanks(@RequestParam(value = "gameId" , required = false) Integer gameId,
-                                                 @RequestParam(value = "page") Integer page,
-                                                 @RequestParam(value = "limit") Integer limit)
+                                                 @RequestParam(value = "page" , required = false) Integer page,
+                                                 @RequestParam(value = "limit" , required = false) Integer limit)
     {
-        Pageable pageable = PageRequest.of(page-1,limit, Sort.by(Sort.Direction.ASC,"time"));
-        List<RankDto> ranks = iRankService.findAll(gameId,pageable);
+        List<RankDto> ranks = iRankService.findAll(gameId,page,limit);
         return ResponseEntity.ok(ranks);
     }
     // params : time or score , Object user with id , Object game with id

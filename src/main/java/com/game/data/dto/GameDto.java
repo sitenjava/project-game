@@ -16,9 +16,6 @@ public class GameDto extends BaseDto<GameDto>
     private Date end_time;
     private Set<UserDto> users;
     private CategoryDto category;
-    private List<ImageDto> images;
-
-
 
     public String getName() {
         return name;
@@ -100,12 +97,4 @@ public class GameDto extends BaseDto<GameDto>
         this.users = users;
     }
 
-
-    public List<ImageDto> getImages() {
-        return images;
-    }
-
-    public void setImages(List<ImageDto> images) {
-        this.images = images;
-    }
 }

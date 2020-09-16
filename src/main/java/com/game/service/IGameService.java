@@ -1,7 +1,6 @@
 package com.game.service;
 
 import com.game.data.dto.GameDto;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,5 +11,6 @@ public interface IGameService
     GameDto update(GameDto gameDto);
     GameDto findById(Integer id);
     // get list game by category_id
-    List<GameDto> findAll(Integer integer , Boolean active ,String orderBy , String sortDir ,  Pageable pageable);
+    List<GameDto> findAll(Integer integer , Boolean active ,String orderBy , String sortDir ,
+                          Integer page , Integer limit);
 }

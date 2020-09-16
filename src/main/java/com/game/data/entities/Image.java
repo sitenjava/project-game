@@ -15,7 +15,6 @@ public class Image  extends BaseEntity
     private Boolean active;
     @Column(name = "map_value")
     private Integer value;
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;

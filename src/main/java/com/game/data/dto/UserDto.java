@@ -1,5 +1,10 @@
 package com.game.data.dto;
 
+
+import com.game.data.entities.Role;
+
+import java.util.List;
+
 public class UserDto extends BaseDto<UserDto>
 {
     private String username;
