@@ -10,6 +10,6 @@ public interface IQuestionService {
     QuestionDto add(QuestionDto questionDto);
     QuestionDto update(QuestionDto questionDto);
     void delete(QuestionDto questionDto);
-    List<QuestionDto> findAll();
-
+    List<QuestionDto> findAllByGameIdAndActive(Integer gameId , Boolean active);
+    List<QuestionDto> findAllByGameId(Integer gameId , Integer page , Integer limit);
 }

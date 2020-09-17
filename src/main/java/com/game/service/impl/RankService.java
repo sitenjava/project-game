@@ -34,7 +34,7 @@ public class RankService implements IRankService
     public List<RankDto> findAll(Integer gameId, Integer page, Integer limit)
     {
         if (page == null || limit == null)
-            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.PAGE_AND_LIMIT_NOT_NULL);
         Pageable pageable = PageRequest.of(page-1,limit);
         return rankConverter.toDto(rankRepository.findAllByGameId(gameId,pageable));
     }

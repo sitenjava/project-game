@@ -14,25 +14,26 @@ public class QuestionController
 {
     @Autowired
     private IQuestionService iQuestionService;
-    
-    @GetMapping
-    public ResponseEntity<List<QuestionDto>> getQuestions()
+    @GetMapping("/{gameId}")
+    public ResponseEntity<List<QuestionDto>> getQuestions(@PathVariable Integer gameId,
+                                                          @RequestParam(value = "page" , required = false) Integer page ,
+                                                          @RequestParam(value = "limit" , required = false) Integer limit)
+
     {
-        return ResponseEntity.ok(iQuestionService.findAll());
+        return ResponseEntity.ok(iQuestionService.findAllByGameId(gameId,page,limit));
     }
-    
+
     @PostMapping
     public ResponseEntity<QuestionDto> addQuestion(@RequestBody QuestionDto questionDto)
     {
         return ResponseEntity.ok(iQuestionService.add(questionDto));
     }
-    
+
     @PutMapping
     public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto)
     {
         return ResponseEntity.ok(iQuestionService.update(questionDto));
     }
-    
     @DeleteMapping
     public void deleteQuestion(@RequestBody QuestionDto questionDto)
     {

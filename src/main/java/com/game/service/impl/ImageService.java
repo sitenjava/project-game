@@ -3,6 +3,7 @@ package com.game.service.impl;
 import com.game.common.MessageConstants;
 import com.game.common.converters.ImageConverter;
 import com.game.common.exception.APIException;
+import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.ImageDto;
 import com.game.data.dto.QuestionDto;
 import com.game.data.entities.Game;
@@ -36,7 +37,7 @@ public class ImageService implements IImageService
     private ImageRepository imageRepository;
     @Autowired
     private GameRepository gameRepository;
-    private static ImageConverter imageConverter = ImageConverter.getInstance();
+    private final ImageConverter imageConverter = ImageConverter.getInstance();
     @Override
     @Transactional
     public ImageDto save(MultipartFile file , Integer gameId , Integer mapValue)
@@ -60,8 +61,6 @@ public class ImageService implements IImageService
                 byte[] bytes = file.getBytes();
                 fos.write(bytes);
                 fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,11 +75,11 @@ public class ImageService implements IImageService
                                        String orderBy, String sortDir, Integer page, Integer limit)
     {
         if (page == null || limit == null)
-            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.PAGE_AND_LIMIT_NOT_NULL);
         Pageable pageable = PageRequest.of(page-1,limit);
         Set<User> users = gameRepository.findUsersByGameId(gameId);
-//        if (!SecurityUtils.getInstance().isGamePlayer(users))
-//            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+        if (!SecurityUtils.getInstance().isGamePlayer(users))
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageNumber(),
                     Sort.by(Sort.Direction.valueOf(sortDir),orderBy));
@@ -90,31 +89,19 @@ public class ImageService implements IImageService
         return imageConverter.toDto(images);
     }
 
-//    @Override
-//    @Transactional
-//    public List<ImageDto> findAllByActivePlay(Integer gameId) {
-//        Set<User> users = gameRepository.findUsersByGameId(gameId);
-////        if (!SecurityUtils.getInstance().isGamePlayer(users))
-////            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
-//        List<Image> images = imageRepository.getLinkImages(gameId);
-//        if (images == null || images.isEmpty())
-//            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Image_Not_Found);
-//        return imageConverter.toDto(images);
-//    }
     @Override
     @Transactional
     public List<ImageDto> findAllByActivePlay(Integer gameId) {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
-    //        if (!SecurityUtils.getInstance().isGamePlayer(users))
-    //            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+            if (!SecurityUtils.getInstance().isGamePlayer(users))
+                throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         List<Object> images = imageRepository.getLinkImages(gameId);
         if (images == null || images.isEmpty())
-            throw  APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Not_Found);
+            throw  APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.NOT_FOUND);
         List<ImageDto> result = new ArrayList<>();
-
-        for (int i=0;i<images.size();i++)
-        {
-            Object[] object = (Object[]) images.get(i);
+        // just show id , link , mapValue for user
+        for (Object image : images) {
+            Object[] object = (Object[]) image;
             ImageDto imageDto = ImageDto.from((String) object[2])
                     .value((Integer) object[1])
                     .id((Integer) object[0]);
@@ -143,11 +130,14 @@ public class ImageService implements IImageService
     }
 
     @Override
+    @Transactional
     public void delete(Integer[] ids) {
         for (Integer id : ids) {
             String link = imageRepository.getLinkImage(id);
             File file = new File ("src/main/resources/static/"+link);
             boolean remove = file.delete();
+            if (!remove)
+                throw APIException.from(HttpStatus.NOT_ACCEPTABLE).withMessage(MessageConstants.IMAGE_REMOVE_FAILED);
             imageRepository.deleteById(id);
         }
     }

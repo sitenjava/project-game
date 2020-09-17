@@ -47,7 +47,7 @@ public class GameService implements IGameService {
         String action = gameDto.getAction();
         Integer[] ids = gameDto.getIds();
         if (action == null)
-            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Bad_Request);
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.BAD_REQUEST);
         if (action.equals("add")) {
             for (Integer id : ids)
             {
@@ -67,27 +67,31 @@ public class GameService implements IGameService {
     public GameDto findById(Integer id) {
         Game game = gameRepository.findById(id).orElse(null);
         if (game == null)
-            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Game_Not_Found);
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.GAME_NOT_FOUND);
+        GameDto gameDto = gameConverter.toDto(game);
+        // not show list user for user
         if (!SecurityUtils.getInstance().isAdmin())
-            game.setUsers(null);
-        return gameConverter.toDto(game);
+            gameDto.setUsers(null);
+        return gameDto;
     }
 
     @Override
     @Transactional
     public List<GameDto> findAll(Integer categoryId, Boolean active, String orderBy, String sortDir, Integer page, Integer limit) {
         if (page == null || limit == null)
-            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.PAGE_AND_LIMIT_NOT_NULL);
         Pageable pageable = PageRequest.of(page-1,limit);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.valueOf(sortDir), orderBy);
         List<Game> games = gameRepository.findAll(categoryId, active, pageable);
         if (games.isEmpty())
-            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Game_Not_Found);
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.GAME_NOT_FOUND);
+        List<GameDto> list = gameConverter.toDto(games);
+        // not show list user for user
         if (!SecurityUtils.getInstance().isAdmin())
-            games.forEach(game -> {
-                game.setUsers(null);
+            list.forEach(gameDto -> {
+                gameDto.setUsers(null);
             });
-        return gameConverter.toDto(games);
+        return list;
     }
 }

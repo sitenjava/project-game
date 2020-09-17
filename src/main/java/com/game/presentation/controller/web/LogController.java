@@ -14,21 +14,21 @@ public class LogController
 {
     @Autowired
     private ILogService iLogService;
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<Set<LogDto>> getLogs(@RequestParam(value = "userid" , required = false) Integer userId ,
                                                @RequestParam(value = "gameId" , required = false) Integer gameId)
     {
         Set<LogDto> logs = iLogService.findAllByUserIdAndGameId(userId,gameId);
         return ResponseEntity.ok(logs);
     }
-    @DeleteMapping("/")
+    @DeleteMapping
     public ResponseEntity<String> removeLog(@RequestParam(value = "userid" , required = false) Integer userId ,
                                             @RequestParam(value = "gameId" , required = false) Integer gameId)
     {
         iLogService.delete(userId,gameId);
         return ResponseEntity.ok("Log is removed");
     }
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<LogDto> addLog(@RequestBody LogDto logDto)
     {
         logDto = iLogService.save(logDto);

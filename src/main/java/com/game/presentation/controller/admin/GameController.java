@@ -14,14 +14,14 @@ public class GameController
     private IGameService iGameService;
 
     // Create game without users : params : name , description , timeLimit , active , url , isPublic , startTime , endTime
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<GameDto> addGame(@RequestBody GameDto gameDto)
     {
         GameDto result = iGameService.add(gameDto);
         return ResponseEntity.ok(result);
     }
     // Active cho player : params : Ids of user , id of Game , action : "add" or "remove"
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<GameDto> updateGame(@RequestBody GameDto gameDto)
     {
         GameDto game = iGameService.update(gameDto);

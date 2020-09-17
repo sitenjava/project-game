@@ -21,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             httpServletResponse.getWriter().write(
                     new JSONObject()
                             .put("status", 403)
-                            .put("message", MessageConstants.Access_Denied)
+                            .put("message", MessageConstants.ACCESS_DENIED)
                             .toString()
             );
         } catch (JSONException ex) {

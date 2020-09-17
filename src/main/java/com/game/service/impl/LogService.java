@@ -30,7 +30,7 @@ public class LogService implements ILogService
     public Set<LogDto> findAllByUserIdAndGameId(Integer userId , Integer gameId) {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
         if (!SecurityUtils.getInstance().isGamePlayer(users))
-            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         Set<Log> logs = logRepository.findAllByUserIdAndGameId(userId,gameId);
         return logConverter.toDto(logs);
     }
@@ -41,7 +41,7 @@ public class LogService implements ILogService
     {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
         if (!SecurityUtils.getInstance().isGamePlayer(users))
-            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         logRepository.deleteAllByUserId(userId,gameId);
     }
 
