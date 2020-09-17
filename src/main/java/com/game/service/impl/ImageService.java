@@ -86,7 +86,7 @@ public class ImageService implements IImageService
                     Sort.by(Sort.Direction.valueOf(sortDir),orderBy));
         List<Image> images = imageRepository.findAll(gameId,active,activePlay,pageable);
         if (images == null || images.isEmpty())
-            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Image_Not_Found);
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.IMAGE_NOT_FOUND);
         return imageConverter.toDto(images);
     }
 

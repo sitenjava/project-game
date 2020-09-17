@@ -49,7 +49,7 @@ public class QuestionService implements IQuestionService {
     public List<QuestionDto> findAll() {
         List<Question> questions = questionRepository.findAll();
         if (questions.isEmpty())
-            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Question_Not_Found);
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.QUESTION_NOT_FOUND);
         return questionConverter.toDto(questions);
     }
 }
