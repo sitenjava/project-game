@@ -68,9 +68,11 @@ public class GameService implements IGameService {
         Game game = gameRepository.findById(id).orElse(null);
         if (game == null)
             throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Game_Not_Found);
+        GameDto gameDto = gameConverter.toDto(game);
+        // not show list user for user
         if (!SecurityUtils.getInstance().isAdmin())
-            game.setUsers(null);
-        return gameConverter.toDto(game);
+            gameDto.setUsers(null);
+        return gameDto;
     }
 
     @Override
@@ -84,10 +86,12 @@ public class GameService implements IGameService {
         List<Game> games = gameRepository.findAll(categoryId, active, pageable);
         if (games.isEmpty())
             throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Game_Not_Found);
+        List<GameDto> list = gameConverter.toDto(games);
+        // not show list user for user
         if (!SecurityUtils.getInstance().isAdmin())
-            games.forEach(game -> {
-                game.setUsers(null);
+            list.forEach(gameDto -> {
+                gameDto.setUsers(null);
             });
-        return gameConverter.toDto(games);
+        return list;
     }
 }

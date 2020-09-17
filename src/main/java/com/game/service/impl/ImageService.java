@@ -3,6 +3,7 @@ package com.game.service.impl;
 import com.game.common.MessageConstants;
 import com.game.common.converters.ImageConverter;
 import com.game.common.exception.APIException;
+import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.ImageDto;
 import com.game.data.dto.QuestionDto;
 import com.game.data.entities.Game;
@@ -60,8 +61,6 @@ public class ImageService implements IImageService
                 byte[] bytes = file.getBytes();
                 fos.write(bytes);
                 fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -79,8 +78,8 @@ public class ImageService implements IImageService
             throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
         Pageable pageable = PageRequest.of(page-1,limit);
         Set<User> users = gameRepository.findUsersByGameId(gameId);
-//        if (!SecurityUtils.getInstance().isGamePlayer(users))
-//            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+        if (!SecurityUtils.getInstance().isGamePlayer(users))
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageNumber(),
                     Sort.by(Sort.Direction.valueOf(sortDir),orderBy));
@@ -90,23 +89,12 @@ public class ImageService implements IImageService
         return imageConverter.toDto(images);
     }
 
-//    @Override
-//    @Transactional
-//    public List<ImageDto> findAllByActivePlay(Integer gameId) {
-//        Set<User> users = gameRepository.findUsersByGameId(gameId);
-////        if (!SecurityUtils.getInstance().isGamePlayer(users))
-////            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
-//        List<Image> images = imageRepository.getLinkImages(gameId);
-//        if (images == null || images.isEmpty())
-//            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Image_Not_Found);
-//        return imageConverter.toDto(images);
-//    }
     @Override
     @Transactional
     public List<ImageDto> findAllByActivePlay(Integer gameId) {
         Set<User> users = gameRepository.findUsersByGameId(gameId);
-    //        if (!SecurityUtils.getInstance().isGamePlayer(users))
-    //            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+            if (!SecurityUtils.getInstance().isGamePlayer(users))
+                throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
         List<Object> images = imageRepository.getLinkImages(gameId);
         if (images == null || images.isEmpty())
             throw  APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Not_Found);
