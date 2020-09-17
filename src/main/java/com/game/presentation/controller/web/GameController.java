@@ -18,7 +18,7 @@ public class GameController
     @Autowired
     private IGameService iGameService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<GameDto>> getList(@RequestParam(value = "categoryId" , required = false) Integer categoryId,
                                                  @RequestParam(value = "active" , required = false) Boolean active,
                                                  @RequestParam(value = "sortDir" , required = false) String sortDir,

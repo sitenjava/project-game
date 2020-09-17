@@ -54,10 +54,10 @@ public class QuestionService implements IQuestionService {
     public List<QuestionDto> findAllByGameIdAndActive(Integer gameId , Boolean active) {
         List<Question> questions = questionRepository.findAllByGameIdAndActive(gameId,active);
         if (questions.isEmpty())
-            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Question_Not_Found);
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.QUESTION_NOT_FOUND);
         Set<User> users = questions.get(0).getGame().getUsers();
-//        if (!SecurityUtils.getInstance().isGamePlayer(users))
-//            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.Not_Gamer);
+        if (!SecurityUtils.getInstance().isGamePlayer(users))
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         List<QuestionDto> list = questionConverter.toDto(questions);
         list.forEach(questionDto -> questionDto.setGame(null));
         return list;
@@ -67,11 +67,11 @@ public class QuestionService implements IQuestionService {
     @Transactional
     public List<QuestionDto> findAllByGameId(Integer gameId, Integer page, Integer limit) {
         if (page == null || limit == null)
-            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.Page_And_Limit_Not_Null);
+            throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.PAGE_AND_LIMIT_NOT_NULL);
         Pageable pageable = PageRequest.of(page-1,limit);
         List<Question> questions = questionRepository.findAllByGameId(gameId,pageable);
         if (questions.isEmpty())
-            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.Question_Not_Found);
+            throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.QUESTION_NOT_FOUND);
         return questionConverter.toDto(questions);
     }
 }

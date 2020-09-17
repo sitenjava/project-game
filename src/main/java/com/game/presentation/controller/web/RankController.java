@@ -18,7 +18,7 @@ public class RankController
 {
     @Autowired
     private IRankService iRankService;
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<RankDto>> getRanks(@RequestParam(value = "gameId" , required = false) Integer gameId,
                                                  @RequestParam(value = "page" , required = false) Integer page,
                                                  @RequestParam(value = "limit" , required = false) Integer limit)
@@ -27,7 +27,7 @@ public class RankController
         return ResponseEntity.ok(ranks);
     }
     // params : time or score , Object user with id , Object game with id
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<RankDto> addRank(@RequestBody RankDto rankDto)
     {
         RankDto rank = iRankService.save(rankDto);

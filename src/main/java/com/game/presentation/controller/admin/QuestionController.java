@@ -22,18 +22,18 @@ public class QuestionController
     {
         return ResponseEntity.ok(iQuestionService.findAllByGameId(gameId,page,limit));
     }
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<QuestionDto> addQuestion(@RequestBody QuestionDto questionDto)
     {
         return ResponseEntity.ok(iQuestionService.add(questionDto));
     }
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto)
     {
         return ResponseEntity.ok(iQuestionService.update(questionDto));
     }
     // Param : field ids of QuestionDto
-    @DeleteMapping("/")
+    @DeleteMapping
     public void deleteQuestion(@RequestBody QuestionDto questionDto)
     {
         iQuestionService.delete(questionDto);
