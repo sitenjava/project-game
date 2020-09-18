@@ -13,4 +13,5 @@ public class MessageConstants {
     public static final String QUESTION_NOT_FOUND = "Không tìm thấy question nào";
     public static final String IMAGE_REMOVE_FAILED = "Không thể xóa ảnh này";
     public static final String PAGE_AND_LIMIT_NOT_NULL = "Page và limit phải khác null";
+    public static final String LOGIN_TO_PLAY = "Đăng nhập để chơi game";
 }

@@ -1,6 +1,7 @@
 package com.game.common.utils;
 
 import com.game.CustomUserDetails;
+import com.game.data.dto.UserDto;
 import com.game.data.entities.User;
 import com.game.data.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class SecurityUtils {
             securityUtils = new SecurityUtils();
         return securityUtils;
     }
+    public boolean isAnonymous()
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.isAuthenticated();
+    }
     public boolean isGamePlayer(Set<User> users)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -32,6 +38,17 @@ public class SecurityUtils {
             return false;
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         for (User user : users)
+            if (user.getId() == userDetails.getUser().getId())
+                return true;
+        return false;
+    }
+    public boolean isPlayer(Set<UserDto> users)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.isAuthenticated())
+            return false;
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        for (UserDto user : users)
             if (user.getId() == userDetails.getUser().getId())
                 return true;
         return false;
@@ -48,9 +65,6 @@ public class SecurityUtils {
     public boolean isAdmin()
     {
         List<String> roles = getRoles();
-        if (roles.contains("ROLE_ADMIN"))
-            return true;
-        return false;
+        return roles.contains("ROLE_ADMIN");
     }
-
 }

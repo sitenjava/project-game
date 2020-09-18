@@ -1,7 +1,7 @@
 package com.game.service.impl;
 
 import com.game.common.MessageConstants;
-import com.game.common.converters.RankConverter;
+import com.game.common.utils.Converter;
 import com.game.common.exception.APIException;
 import com.game.data.dto.RankDto;
 import com.game.data.entities.Rank;
@@ -21,7 +21,8 @@ public class RankService implements IRankService
 {
     @Autowired
     private RankRepository rankRepository;
-    public static RankConverter rankConverter = RankConverter.getInstance();
+    private final Converter<RankDto,Rank> rankConverter = new Converter<>(RankDto.class,Rank.class);
+
     @Override
     @Transactional
     public RankDto save(RankDto rankDto)

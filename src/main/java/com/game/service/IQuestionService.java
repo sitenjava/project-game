@@ -1,10 +1,8 @@
 package com.game.service;
 
 import com.game.data.dto.QuestionDto;
-import com.game.data.entities.Question;
 
 import java.util.List;
-import java.util.Set;
 
 public interface IQuestionService {
     QuestionDto add(QuestionDto questionDto);

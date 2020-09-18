@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Set;
 
 public interface LogRepository extends JpaRepository<Log, Integer>
@@ -15,6 +16,6 @@ public interface LogRepository extends JpaRepository<Log, Integer>
                            @Param("gameId") Integer gameId);
 
     @Query(value = "select l from Log l where l.user.id = :userid and l.image.game.id = :gameId")
-    Set<Log> findAllByUserIdAndGameId(@Param("userid") Integer userid ,
-                             @Param("gameId") Integer gameId);
+    List<Log> findAllByUserIdAndGameId(@Param("userid") Integer userid ,
+                                       @Param("gameId") Integer gameId);
 }

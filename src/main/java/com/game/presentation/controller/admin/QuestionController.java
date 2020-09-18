@@ -1,7 +1,6 @@
 package com.game.presentation.controller.admin;
 
 import com.game.data.dto.QuestionDto;
-import com.game.data.entities.Question;
 import com.game.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

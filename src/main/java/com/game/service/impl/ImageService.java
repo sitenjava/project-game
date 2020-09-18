@@ -1,11 +1,10 @@
 package com.game.service.impl;
 
 import com.game.common.MessageConstants;
-import com.game.common.converters.ImageConverter;
+import com.game.common.utils.Converter;
 import com.game.common.exception.APIException;
 import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.ImageDto;
-import com.game.data.dto.QuestionDto;
 import com.game.data.entities.Game;
 import com.game.data.entities.Image;
 import com.game.data.entities.User;
@@ -20,14 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -37,7 +33,8 @@ public class ImageService implements IImageService
     private ImageRepository imageRepository;
     @Autowired
     private GameRepository gameRepository;
-    private final ImageConverter imageConverter = ImageConverter.getInstance();
+    private final Converter<ImageDto,Image> imageConverter = new Converter<>(ImageDto.class,Image.class);
+
     @Override
     @Transactional
     public ImageDto save(MultipartFile file , Integer gameId , Integer mapValue)

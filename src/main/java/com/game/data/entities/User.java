@@ -6,6 +6,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 
 @Entity
