@@ -2,11 +2,11 @@ package com.game.service;
 
 import com.game.data.dto.LogDto;
 
-import java.util.Set;
+import java.util.List;
 
 public interface ILogService
 {
-    Set<LogDto> findAllByUserIdAndGameId(Integer userId ,Integer gameId);
+    List<LogDto> findAllByUserIdAndGameId(Integer userId , Integer gameId);
     void delete(Integer userId  , Integer gameId);
     LogDto save(LogDto logDto);
 }

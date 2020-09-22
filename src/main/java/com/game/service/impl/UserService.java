@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -45,13 +46,13 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User getUserById(Integer id) {
         User user = userRepository.findUserById(id);
 
         if (user == null) {
             throw new UserNotFoundException(id);
         }
-
         return user;
     }
 

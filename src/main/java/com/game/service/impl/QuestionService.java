@@ -1,7 +1,7 @@
 package com.game.service.impl;
 
 import com.game.common.MessageConstants;
-import com.game.common.converters.QuestionConverter;
+import com.game.common.utils.Converter;
 import com.game.common.exception.APIException;
 import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.QuestionDto;
@@ -24,8 +24,8 @@ import java.util.Set;
 public class QuestionService implements IQuestionService {
     @Autowired
     private QuestionRepository questionRepository;
+    private final Converter<QuestionDto,Question> questionConverter = new Converter<>(QuestionDto.class,Question.class);
 
-    private final QuestionConverter questionConverter = QuestionConverter.getInstance();
     @Override
     @Transactional
     public QuestionDto add(QuestionDto questionDto) {
@@ -60,6 +60,7 @@ public class QuestionService implements IQuestionService {
         if (!SecurityUtils.getInstance().isGamePlayer(users))
             throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         List<QuestionDto> list = questionConverter.toDto(questions);
+        // not show game info for users
         list.forEach(questionDto -> questionDto.setGame(null));
         return list;
     }

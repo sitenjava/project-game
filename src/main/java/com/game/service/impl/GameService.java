@@ -1,7 +1,7 @@
 package com.game.service.impl;
 
 import com.game.common.MessageConstants;
-import com.game.common.converters.GameConverter;
+import com.game.common.utils.Converter;
 import com.game.common.exception.APIException;
 import com.game.common.utils.SecurityUtils;
 import com.game.data.dto.GameDto;
@@ -17,10 +17,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService implements IGameService {
@@ -28,7 +28,9 @@ public class GameService implements IGameService {
     private GameRepository gameRepository;
     @Autowired
     private UserRepository userRepository;
-    public static GameConverter gameConverter = GameConverter.getInstance();
+    private final Converter<GameDto,Game> gameConverter = new Converter<>(GameDto.class,Game.class);
+
+    private final SecurityUtils securityUtils = SecurityUtils.getInstance();
 
     @Override
     @Transactional
@@ -49,8 +51,7 @@ public class GameService implements IGameService {
         if (action == null)
             throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.BAD_REQUEST);
         if (action.equals("add")) {
-            for (Integer id : ids)
-            {
+            for (Integer id : ids) {
                 users.add(userRepository.findById(id).orElseThrow(APIException::new));
             }
         } else if (action.equals("remove")) {
@@ -69,6 +70,10 @@ public class GameService implements IGameService {
         if (game == null)
             throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.GAME_NOT_FOUND);
         GameDto gameDto = gameConverter.toDto(game);
+        if (securityUtils.isAnonymous())
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.LOGIN_TO_PLAY);
+        if (!SecurityUtils.getInstance().isPlayer(gameDto.getUsers()))
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.NOT_GAMER);
         // not show list user for user
         if (!SecurityUtils.getInstance().isAdmin())
             gameDto.setUsers(null);
@@ -78,20 +83,21 @@ public class GameService implements IGameService {
     @Override
     @Transactional
     public List<GameDto> findAll(Integer categoryId, Boolean active, String orderBy, String sortDir, Integer page, Integer limit) {
+        if (securityUtils.isAnonymous())
+            throw APIException.from(HttpStatus.FORBIDDEN).withMessage(MessageConstants.LOGIN_TO_PLAY);
         if (page == null || limit == null)
             throw APIException.from(HttpStatus.BAD_REQUEST).withMessage(MessageConstants.PAGE_AND_LIMIT_NOT_NULL);
-        Pageable pageable = PageRequest.of(page-1,limit);
+        Pageable pageable = PageRequest.of(page - 1, limit);
         if (orderBy != null && sortDir != null)
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.valueOf(sortDir), orderBy);
         List<Game> games = gameRepository.findAll(categoryId, active, pageable);
         if (games.isEmpty())
             throw APIException.from(HttpStatus.NOT_FOUND).withMessage(MessageConstants.GAME_NOT_FOUND);
         List<GameDto> list = gameConverter.toDto(games);
-        // not show list user for user
-        if (!SecurityUtils.getInstance().isAdmin())
-            list.forEach(gameDto -> {
-                gameDto.setUsers(null);
-            });
+        if (!securityUtils.isAdmin())
+            list = list.stream().filter(game ->
+                    securityUtils.isPlayer(game.getUsers())
+            ).peek(game -> game.setUsers(null)).collect(Collectors.toList());
         return list;
     }
 }
