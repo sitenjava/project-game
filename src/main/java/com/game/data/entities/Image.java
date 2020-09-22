@@ -1,6 +1,5 @@
 package com.game.data.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 
 @Entity
